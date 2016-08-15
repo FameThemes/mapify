@@ -1,3 +1,117 @@
 .attachments-browser .attachments.map-preview {
     top: 0px;
 }
+.mapify-modal .media-sidebar{
+    padding-left: 0px;
+    padding-right: 0px;
+    width: 300px;
+}
+.mapify-modal .media-sidebar  h2,
+.mapify-modal .location-sidebar  h2 {
+    margin: 20px 10px;
+}
+.map-option-group li {
+    border-top: 1px solid #ddd;
+    margin-bottom: 0px;
+}
+.map-option-group li:last-child {
+    border-bottom: 1px solid #ddd;
+}
+.map-option-group li.no-group {
+   border-top: none !important;
+   border-bottom: none !important;
+    padding: 5px 10px 10px;
+}
+
+.map-og-heading {
+    background: #f5f5f5;
+    position: relative;
+    padding: 10px 10px 11px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.map-og-heading:after {
+    position: absolute;
+    top: 9px;
+    right: 15px;
+    font-family: "dashicons";
+    font-size: 20px;
+    opacity: .8;
+    content: "\f140";
+}
+
+.opened .map-og-heading:after {
+    content: "\f142";
+}
+.map-og-settings {
+    border-top: 1px solid #ddd;
+    background: #ffffff;
+    padding: 10px;
+    display: none;
+}
+.opened .map-og-settings {
+
+}
+
+.mapify-modal .field-input {
+    margin-bottom: 15px;
+}
+.mapify-modal .field-input:last-child {
+    margin-bottom: 0px;
+}
+.mapify-modal .field-text input,
+.mapify-modal .field-select select,
+.mapify-modal .field-textarea textarea {
+    display: block;
+    width: 100%;
+}
+.mapify-modal .field-textarea textarea {
+    min-height: 150px;
+}
+.mapify-modal .locations li {
+    background: #f5f5f5 none repeat scroll 0 0;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 10px 10px 11px;
+    position: relative;
+    border-top: 1px solid #ddd;
+    margin-bottom: 0px;
+}
+.mapify-modal .locations li.active {
+    background: #ffffff;
+}
+.mapify-modal .locations li:last-child {
+    border-bottom: 1px solid #ddd;
+}
+
+.mapify-modal .location-sidebar {
+    position: absolute;
+    right: 0px;
+    width: 300px;
+    top: 0px;
+    bottom: 0px;
+    background: #F3F3F3;
+    border-left: 1px solid #ddd;
+    overflow: auto;
+}
+.location-close {
+    text-decoration: none;
+    position: absolute;
+    right: 0px;
+}
+.location-close::before {
+    content: "\f335";
+    color: #666;
+    font: 400 20px/1 dashicons;
+    vertical-align: middle;
+}
+
+.location-actions {
+    text-align: center;
+    display: table;
+    width: 100%;
+}
+.location-actions a {
+    display: table-cell;
+}

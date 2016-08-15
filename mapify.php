@@ -26,6 +26,7 @@ class Mapify {
     {
         require_once $this->path.'inc/class-location.php';
         if ( is_admin() ) {
+            require_once $this->path.'admin/class-meta.php';
             require_once $this->path.'admin/class-admin.php';
         }
     }
