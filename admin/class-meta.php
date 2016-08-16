@@ -62,6 +62,19 @@ class Mapify_Meta {
     }
     function get_map_settings(){
         $map_settings = array(
+
+            'locations' => array(
+                'group_heading' => esc_html__( 'Locations', 'mapify' ),
+                'id' => 'locations',
+                'settings' => array(
+                    array(
+                        'title' => esc_html__( 'Style settings code', 'mapify' ),
+                        'type' => 'locations',
+                        'id' => 'locations'
+                    ),
+                )
+            ),
+
             'general' => array(
                 'group_heading' => esc_html__( 'General', 'mapify' ),
                 'id' => 'general',
@@ -310,8 +323,15 @@ class Mapify_Meta {
         $html = '';
         $html .= '<ul class="map-option-group">';
         foreach ( $group_settings as $group ) {
-            if ( isset( $group['settings'] ) ) {
-                $html .= '<li>';
+            $group = wp_parse_args( $group, array(
+                'id' => ''
+            ) );
+            if ( $group['id'] == 'locations' ) {
+                $html .= '<li class="group-locations locations">';
+                $html .= '<div class="map-og-heading">'.esc_html( $group['group_heading'] ).'</div>';
+                $html .= '</li>';
+            } else if ( isset( $group['settings']) && is_array(  $group['settings'] ) ) {
+                $html .= '<li class="group-'.esc_attr( $group['id'] ).'">';
                 $html .= '<div class="map-og-heading">'.esc_html( $group['group_heading'] ).'</div>';
                 $html .= '<div class="map-og-settings">';
                 foreach ( $group['settings'] as $setting ) {

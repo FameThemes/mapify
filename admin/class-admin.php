@@ -21,12 +21,17 @@ class Mapify_Admin {
         }
         Mapify()->load_gmap_js();
         wp_enqueue_media();
-        wp_enqueue_script( 'mapify-admi', Mapify()->url.'assets/js/admin.js', array( 'jquery', 'google-maps-api', 'json2' ), false, true );
+        wp_enqueue_script( 'mapify-admin', Mapify()->url.'assets/js/admin.js', array( 'jquery', 'google-maps-api', 'json2' ), false, true );
         wp_enqueue_style( 'mapify-admin', Mapify()->url.'assets/css/admin.css' );
-        wp_localize_script( 'google-maps', 'GMAP', array(
+        wp_localize_script( 'mapify-admin', 'mapify_config', array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce( 'gmap_nonce_action' ),
             'confirm' => esc_html__( 'Are your sure ?', 'mapify' ),
+            'helps' => array(
+                'new_marker' => esc_html__( 'Right click on the map to add marker.', 'mapify' ),
+                'new_polygon' => esc_html__( 'Right click on the map to add marker, Click Done button to complete.', 'mapify' ),
+                'new_circle' => esc_html__( 'Right click on the map to add circl.', 'mapify' ),
+            )
         ) );
     }
 
