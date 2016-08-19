@@ -1,3 +1,29 @@
+#js-debug {
+    z-index: 99999999;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    background: green;
+    color: #ffffff;
+    display: none;
+    height: 50px;
+    width: auto;
+    overflow: auto;
+}
+
+
+.mapify-modal .media-frame-title {
+    margin-right: 50px;
+    overflow: hidden;
+}
+.mapify-modal .media-frame-title .map-title {
+   border: 1px dashed transparent;
+    outline: none;
+}
+.mapify-modal .media-frame-title .map-title:hover,
+.mapify-modal .media-frame-title .map-title:focus {
+    border: 1px dashed #333;
+}
 .map-preview {
     width: 100%;
     height: 100%;
@@ -119,12 +145,13 @@
     border-right: 1px solid #ddd;
     overflow: auto;
 }
-.location-close {
+.locations-close {
     text-decoration: none;
     position: absolute;
     right: 0px;
+    top: 0px;
 }
-.location-close::before {
+.locations-close::before {
     content: "\f335";
     color: #666;
     font: 400 20px/1 dashicons;
@@ -134,9 +161,48 @@
 
 
 .location-actions {
-    text-align: center;
-    display: table;
-    width: 100%;
+    position: relative;
+}
+.location-actions a {
+    text-decoration: none;
+    outline: none !important;
+    text-transform: none;
+}
+.location-actions .first-menu {
+    padding: 5px;
+    background: #ffffff;
+    z-index: 35;
+    position: relative;
+    border: 1px solid transparent;
+    /*
+    border-right: 1px solid transparent;
+    border-top: 1px solid transparent;
+    border-bottom: 0 none !important;
+    */
+}
+.location-actions:hover .first-menu {
+    border-color: #DDDDDD;
+}
+.location-actions .sub-menu-actions {
+    position: absolute;
+    top: 28px;
+    left: 0px;
+    width: 150px;
+    background: #ffffff;
+    border-left: 1px solid #DDDDDD;
+    border-right: 1px solid #DDDDDD;
+    border-bottom: 1px solid #DDDDDD;
+    z-index: 30;
+    display: none;
+}
+.location-actions:hover .sub-menu-actions {
+    display: block;
+}
+
+.location-actions .sub-menu-actions a {
+    display: block;
+    padding: 5px;
+    border-top: 1px solid #DDDDDD;
 }
 .location-actions a {
     display: table-cell;
@@ -147,5 +213,48 @@
     left: 10px;
     top: 10px;
     bottom: 10px;
+    display: block;
+}
+
+.pac-container {
+    z-index: 999999;
+}
+
+/* Map Listing */
+.mapify-maps * {
+    box-sizing: border-box;
+}
+.mapify-maps:after {
+    clear: both;
+    content: ''; display: block;
+}
+.mapify-maps .map-col{
+    width: 33.33333%;
+    float: left;
+    padding: 15px;
+}
+.mapify-map-item {
+    border: 1px solid #DDDDDD;
+}
+.mapify-map-item .map-meta {
+    padding: 20px;
+}
+.mapify-map-item .map-name {
+    font-size: 18px;
+}
+.mapify-maps .gmap-preview-wrapper{
+    padding-top: 80%;
+    display: block;
+    background: #333333;
+    position: relative;
+}
+.mapify-maps .gmap-preview {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    width: 100%;
+    height: 100%;
     display: block;
 }

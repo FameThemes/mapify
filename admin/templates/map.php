@@ -1,3 +1,5 @@
+<div id="js-debug"></div>
+
 <?php
 $meta = new Mapify_Meta();
 ?>
@@ -27,8 +29,19 @@ $meta = new Mapify_Meta();
 <script type="text/html" id="mapify-locations-template">
     <div class="locations-sidebar image-details">
         <h2>
-            <?php esc_html_e( 'Locations', 'mapify' ); ?>
-            <a href="#" class="location-close"></a>
+            <?php // esc_html_e( 'Locations', 'mapify' ); ?>
+            <div class="location-actions">
+                <a class="new-marker first-menu" data-action="new-marker" href="#"><?php esc_html_e( 'Add Location', 'mapify' ); ?></a>
+                <?php /*
+                <div class="sub-menu-actions">
+                    <a class="new-marker" data-action="new-marker" href="#"><?php esc_html_e( 'Add Marker', 'mapify' ); ?></a>
+                    <a class="new-polygon" data-action="new-polygon" href="#"><?php esc_html_e( 'Add Polygon', 'mapify' ); ?></a>
+                    <a class="new-direction" data-action="new-direction" href="#"><?php esc_html_e( 'Add Direction', 'mapify' ); ?></a>
+                    <a class="new-circle" data-action="new-circle" href="#"><?php esc_html_e( 'Add Circle', 'mapify' ); ?></a>
+                </div>
+                */ ?>
+            </div>
+            <a href="#" class="locations-close"></a>
         </h2>
         <ul class="map-option-group locations-list">
         </ul>
@@ -39,14 +52,16 @@ $meta = new Mapify_Meta();
 
     <div class="media-modal wp-core-ui mapify-modal">
         <button class="button-link media-modal-close" type="button">
-            <span class="media-modal-icon"><span class="screen-reader-text">Close media panel</span></span>
+            <span class="media-modal-icon">
+                <span class="screen-reader-text"><?php esc_html_e( 'Close media panel', 'mapify' ); ?></span>
+            </span>
         </button>
         <div class="media-modal-content">
-            <div class="media-frame mode-select wp-core-ui hide-menu hide-router hide-toolbar---" id="__wp-uploader-id-3">
+            <div class="media-frame mode-select wp-core-ui hide-menu hide-router hide-toolbar---">
                 <div class="media-frame-title">
-                    <h1>Featured Image<span class="dashicons dashicons-arrow-down"></span></h1>
+                    <h1><span title="<?php esc_attr_e( 'Click to edit', 'mapify' ); ?>" class="map-title" contenteditable="true"><# if ( data.map_title ) { #>{{ data.map_title }}<# } else { #><?php esc_html_e( 'Untitled', 'mapify' ); ?><# } #></span></h1>
                 </div>
-                <div class="media-frame-content" data-columns="7">
+                <div class="media-frame-content">
                     <div class="attachments-browser">
                         <div class="media-sidebar">
                             <div tabindex="0" data-id="7" class="attachment-details save-ready">
@@ -60,12 +75,6 @@ $meta = new Mapify_Meta();
                                     ?>
                                 </form>
 
-                                <div class="location-actions">
-                                    <a class="new-marker" href="#"><?php esc_html_e( '+ Marker', 'mapify' ); ?></a>
-                                    <a class="new-polygon" href="#"><?php esc_html_e( '+ Polygon', 'mapify' ); ?></a>
-                                    <a class="new-direction" href="#"><?php esc_html_e( '+ Direction', 'mapify' ); ?></a>
-                                    <a class="new-circle" href="#"><?php esc_html_e( '+ Circle', 'mapify' ); ?></a>
-                                </div>
 
                             </div>
                             <form class="compat-item"></form>
@@ -81,7 +90,7 @@ $meta = new Mapify_Meta();
                         <div class="action-msg"></div>
                         <div class="media-toolbar-secondary"></div>
                         <div class="media-toolbar-primary search-form">
-                            <button type="button" class="button media-button button-primary button-large media-button-select">Save Changes</button>
+                            <button type="button" disabled="disabled" class="mapify-save button media-button button-primary button-large media-button-select"><?php esc_html_e( 'Save Changes', 'mapify' ); ?></button>
                         </div>
                     </div>
                 </div>

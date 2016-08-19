@@ -33,10 +33,10 @@ class Mapify_Post_Type {
 
         $map_args = array(
             'labels'             => $map_labels,
-            'public'             => false,
+            'public'             => true,
             'publicly_queryable' => false,
-            'show_ui'            => false,
-            'show_in_menu'       => false,
+            'show_ui'            => true,
+            'show_in_menu'       => true,
             'query_var'          => false,
             'rewrite'            => array( 'slug' => 'map' ),
             'capability_type'    => 'post',
@@ -69,10 +69,10 @@ class Mapify_Post_Type {
 
         $location_args = array(
             'labels'             => $location_labels,
-            'public'             => false,
-            'publicly_queryable' => false,
-            'show_ui'            => false,
-            'show_in_menu'       => false,
+            'public'             => true,
+            'publicly_queryable' => true,
+            'show_ui'            => true,
+            'show_in_menu'       => true,
             'query_var'          => false,
             'rewrite'            => array( 'slug' => 'location' ),
             'capability_type'    => 'post',

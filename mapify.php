@@ -24,6 +24,8 @@ class Mapify {
 
     function includes()
     {
+        require_once $this->path.'inc/class-post-type.php';
+        require_once $this->path.'inc/class-map.php';
         require_once $this->path.'inc/class-location.php';
         if ( is_admin() ) {
             require_once $this->path.'admin/class-meta.php';
