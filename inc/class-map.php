@@ -184,7 +184,6 @@ class Mapify_Map {
                 foreach ( $group['settings'] as $setting ) {
                     $fields[ $setting['id'] ] = isset( $setting['default'] ) ? $setting['default']: null;
                 }
-
             } else {
                 $fields[ $group['id'] ] = isset( $group['default'] ) ? $group['default']: null;
             }

@@ -109,7 +109,11 @@ var mapify = {
                 center: new google.maps.LatLng( 54.800685, -4.130859 ),
                 zoom: 12,
                 disableDoubleClickZoom: true,
-                panControl: true,
+                scrollwheel: true,
+                panControl: false,
+                zoomControl: false,
+                streetViewControl: false,
+                mapTypeControl: false,
             };
             map = new google.maps.Map( map_item.find('.gmap-preview')[0], mapOptions );
         } );
@@ -118,28 +122,43 @@ var mapify = {
         $( 'body').on( 'click', '.mapify-map-item', function( e ){
             e.preventDefault();
             var map_item = $( this );
-            var map_id = map_item.attr( 'map_id' );
+            var map_id = map_item.attr( 'data-map-id' );
             $.ajax({
                 url: mapify_config.ajax_url,
                 type: 'POST',
                 data: {
                     action: 'mapify_load_map',
+                    _nonce: mapify_config.nonce,
                     map_id:  map_id,
                 },
                 cache: false,
                 dataType: 'json',
-                success: function(){
+                success: function( res ){
 
+                    if ( res.success ) {
+                        map_modal = $( getTemplate('mapify-map-template', res.data.map ) );
+                        $('body').append( map_modal );
+                        $('body').append('<div class="media-modal-backdrop"></div>');
+
+                        // Insert locations
+                        var locate_tpl = $( getTemplate('mapify-locations-template') );
+                        $('.attachments-browser', map_modal).append(locate_tpl);
+                        mapifyAdmin( map_modal, locate_tpl, res.data.map, res.data.locations );
+                    }
                 }
             })
         } );
 
     }
 
-    function mapifyAdmin( map_modal, locate_tpl, map_data ){
-
+    function mapifyAdmin( map_modal, locate_tpl, map_data, map_locations ){
+        if ( typeof map_locations === "undefined" ) {
+            map_locations = {};
+        }
         var delay = 400, locations = {}, gmap, data_changed = {
-            map: map_data,
+            map: {
+                map_id: map_data.map_id
+            },
             locations: {},
             map_id: map_data.map_id
         };
@@ -159,7 +178,7 @@ var mapify = {
         }
 
         function disableSaveData(){
-            $( '.mapify-save', map_modal ).attr( 'disabled', 'disabled' );
+            $( '.mapify-save' ).attr( 'disabled', 'disabled' );
         }
 
         function getInputVal( input ){
@@ -317,17 +336,22 @@ var mapify = {
             return id;
         }
 
-        function setAnimation( marker, animation ){
+
+        function setAnimation( data, animation ){
             $.each( locations,function ( index ){
                 if ( locations[ index ]._marker ) {
                     locations[ index ]._marker.setAnimation( null );
                     locations[ index ]._marker.setDraggable( false );
                 }
-            } );
-            if ( marker ) {
-                marker.setAnimation( animation );
-            }
+                if ( locations[ index ]._infowindow ) {
+                    locations[ index ]._infowindow.close( );
+                }
 
+            } );
+            if ( data._marker ) {
+                data._marker.setAnimation( animation );
+                data._infowindow.open( data._infowindow, data._marker );
+            }
         }
 
         function setLocationMarker( data ){
@@ -367,7 +391,9 @@ var mapify = {
                 });
 
                 google.maps.event.addListener(data._marker, 'click', function () {
-                    toggleGroupSettings(data._li, 'open');
+                    // Open location sidebar
+                    toggleGroupSettings( data._li, 'open' );
+                    toggleLocationsSidebar( 'open' );
 
                     if (typeof window.marker_timeout === "undefined") {
                         window.marker_timeout = null;
@@ -386,7 +412,7 @@ var mapify = {
                 data._li.on( 'opened', function( e ){
                     e.preventDefault();
                     if ( data._marker ) {
-                        setAnimation( data._marker, google.maps.Animation.BOUNCE );
+                        setAnimation( data, google.maps.Animation.BOUNCE );
                         data._marker.setDraggable( true );
                     }
 
@@ -399,11 +425,20 @@ var mapify = {
                 data._li.on( 'closed', function( e ){
                     e.preventDefault();
                     if ( data._marker ) {
-                        setAnimation( data._marker, null );
+                        setAnimation( data, null );
                     }
-
                 } );
 
+                // infowindow
+                var info = getTemplate( 'mapify-infowindow-template', data );
+                data._infowindow = new google.maps.InfoWindow({
+                    content: info
+                });
+                data._info = $( info );
+
+                data._marker.addListener('click', function() {
+                    data._infowindow.open( data._infowindow, data._marker);
+                });
 
             }// and if set lat & lng
         }
@@ -448,18 +483,19 @@ var mapify = {
                     gmap.setZoom( 17 );
                 }
 
-               // marker.setPosition( place.geometry.location );
-
+                // marker.setPosition( place.geometry.location );
                 data.latitude  = place.geometry.location.lat();
                 data.longitude = place.geometry.location.lng();
 
                 setLocationMarker( data );
-                setAnimation( data._marker, google.maps.Animation.BOUNCE );
-                data._marker.setDraggable( true );
+                if ( data._marker ) {
+                    setAnimation(data, google.maps.Animation.BOUNCE);
+                    data._marker.setDraggable(true);
+                }
 
                 data._li.find('[name="latitude"]').val( data.latitude );
                 data._li.find('[name="longitude"]').val(data.longitude );
-                data._li.find('[name="latitude"], [name="longitude"]').trigger('data_changed');
+                data._li.find('[name="latitude"], [name="longitude"], [name="address"]').trigger('data_changed');
 
             });
 
@@ -484,7 +520,6 @@ var mapify = {
 
             });
 
-
             locations[ data.location_id ] = data;
 
             return data.location_id;
@@ -496,13 +531,13 @@ var mapify = {
             }
             data_changed.locations[ location_id ][ key ] = value;
             enableSaveData();
-            $('#js-debug').text( JSON.stringify( data_changed ) );
+            //$('#js-debug').text( JSON.stringify( data_changed ) );
         }
 
         function changeMapData( key, value ){
             data_changed.map[ key ] = value;
             enableSaveData();
-            $('#js-debug').text( JSON.stringify( data_changed ) );
+           // $('#js-debug').text( JSON.stringify( data_changed ) );
         }
 
         /**
@@ -524,8 +559,9 @@ var mapify = {
             }
             var l_id = setupLocation( data );
             if (  locations[ l_id ]._marker ) {
-                setAnimation(locations[l_id]._marker, google.maps.Animation.BOUNCE);
+                setAnimation(locations[l_id], google.maps.Animation.BOUNCE);
             }
+            // Open location sidebar
             toggleGroupSettings( locations[ l_id ]._li, 'open' );
             toggleLocationsSidebar( 'open' );
 
@@ -544,13 +580,21 @@ var mapify = {
             }, delay );
         }
 
+
+
         /**
          * Preview Map
          */
         $( '.map-preview', map_modal ).each( function(){
+            var center;
+            if ( map_data.center_latitude.toString().length > 0 && map_data.center_longitude.toString().length > 0 ) {
+                center = new google.maps.LatLng( parseFloat( map_data.center_latitude ) , parseFloat( map_data.center_longitude ) );
+            } else {
+                center = new google.maps.LatLng( 54.800685, -4.130859 );
+            }
             // Map
             var mapOptions = {
-                center: new google.maps.LatLng( 54.800685, -4.130859 ),
+                center: center,
                 zoom: 12,
                 disableDoubleClickZoom: true,
                 panControl: true,
@@ -633,23 +677,61 @@ var mapify = {
                         $.each( res.data.locations, function ( new_id, id ){
                             changeLocationData( new_id, 'location_id', id );
                         } );
+
+                        disableSaveData();
                     }
                 }
             } );
         } );
 
+        // setup location if have
+        if ( map_locations ) {
+            $.each( map_locations, function( id, locate ){
+                setupLocation( locate );
+            } );
+        }
+
+        // Delete location
+        map_modal.on( 'click', '.del-location', function( e ){
+            e.preventDefault();
+            var location_id = $( this).attr( 'data-l-id' ) || false;
+
+            $.ajax( {
+                url: mapify_config.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'mapify_del_location',
+                    _nonce: mapify_config.nonce,
+                    location_id: location_id
+                },
+                cache: false,
+                dataType: 'json',
+                success: function ( res ) {
+                    if ( res.success ) {
+                        try {
+                            if ( location_id && locations[ location_id ] ) {
+                                if ( locations[ location_id ]._li ) {
+                                    locations[ location_id ]._li.remove();
+                                }
+
+                                if ( locations[ location_id ]._marker ) {
+                                    locations[ location_id ]._marker.setMap( null );
+                                }
+                                delete locations[ location_id ];
+                            }
+                        } catch ( e ) {
+
+                        }
+                    }
+                }
+            } );
+
+
+        });
 
     }
 
-   // window.mapifyAdmin = mapifyAdmin();
     MapifyAdminControler();
-
-    // Set maps preview
-
-
-
-
-
 
 
 }( jQuery, window ));

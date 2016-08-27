@@ -238,6 +238,11 @@
 }
 .mapify-map-item .map-meta {
     padding: 20px;
+    background: #32373C;
+    color: #ffffff;
+    margin-right: -1px;
+    margin-bottom: -1px;
+    margin-left: -1px;
 }
 .mapify-map-item .map-name {
     font-size: 18px;
@@ -257,4 +262,28 @@
     width: 100%;
     height: 100%;
     display: block;
+}
+
+
+/* InfoWindow */
+.gmap-infowindow {
+    width: 300px;
+}
+.gmap-infowindow * {
+    box-sizing: border-box;
+}
+.info-field {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.info-field::after {
+    clear: both; content: " "; display: block;
+}
+.info-field.half .label {
+    width: 40%;
+    float: left;
+}
+.info-field.half .value {
+    width: 60%;
+    float: right;
 }

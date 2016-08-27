@@ -3,6 +3,58 @@
 <?php
 $meta = new Mapify_Meta();
 ?>
+<script type="text/html" id="mapify-infowindow-template">
+    <div class="infowindow gmap-infowindow">
+        <# if ( data.title ) { #>
+            <div class="info-field">
+                <strong class="value">{{ data.title }}</strong>
+            </div>
+        <# } #>
+        <# if (  data.latitude || data.longitude ) { #>
+            <div class="info-field half">
+                <div class="label"><?php esc_html_e( 'Latitude', 'gmap' ) ?></div>
+                <div class="value">{{ data.latitude }}</div>
+            </div>
+        <# } #>
+
+        <# if ( data.longitude ) { #>
+            <div class="info-field half">
+                <div class="label"><?php esc_html_e( 'Longitude', 'gmap' ) ?></div>
+                <div class="value">{{ data.longitude }}</div>
+            </div>
+        <# } #>
+
+        <# if (  data.postal_code ) { #>
+            <div class="info-field half">
+                <div class="label"><?php esc_html_e( 'Postal Code', 'gmap' ) ?></div>
+                <div class="value">{{ data.postal_code }}</div>
+            </div>
+        <# } #>
+
+        <# if (  data.city ) { #>
+            <div class="info-field half">
+                <div class="label"><?php esc_html_e( 'City', 'gmap' ) ?></div>
+                <div class="value">{{ data.city }}</div>
+            </div>
+        <# } #>
+
+        <# if (  data.state ) { #>
+            <div class="info-field half">
+                <div class="label"><?php esc_html_e( 'State', 'gmap' ) ?></div>
+                <div class="value">{{ data.state }}</div>
+            </div>
+        <# } #>
+
+        <# if (  data.country ) { #>
+            <div class="info-field half">
+                <div class="label"><?php esc_html_e( 'Country', 'gmap' ) ?></div>
+                <div class="value">{{ data.country }}</div>
+            </div>
+        <# } #>
+
+        <a href="#" data-l-id="{{ data.location_id }}" class="del-location"><?php esc_html_e( 'Delete', 'mapify' ); ?></a>
+    </div>
+</script>
 <script type="text/html" id="mapify-location-template">
     <div class="location-sidebar image-details">
         <form class="mapify-location-form" data-l-id="location-id-{{ data.location_id }}">
@@ -15,13 +67,14 @@ $meta = new Mapify_Meta();
 </script>
 <script type="text/html" id="mapify-location-li">
     <li class="location-item" data-id="{{ data.location_id }}">
-        <div class="map-og-heading"><# if ( data.title ) {  #>{{ data.title }}<# } else { #><?php esc_html_e( 'Untitled'); ?><# }  #></div>
+        <div class="map-og-heading"><# if ( data.title ) {  #>{{ data.title }}<# } else { #><?php esc_html_e( 'Untitled', 'mapify' ); ?><# }  #></div>
         <div class="map-og-settings">
-           <form class="mapify-location-form" data-l-id="location-id-{{ data.location_id }}">
-               <?php
-               echo $meta->render( $meta->get_location_settings() );
-               ?>
-           </form>
+            <form class="mapify-location-form" data-l-id="location-id-{{ data.location_id }}">
+            <?php
+            echo $meta->render( $meta->get_location_settings() );
+            ?>
+            </form>
+            <a href="#" data-l-id="{{ data.location_id }}" class="del-location"><?php esc_html_e( 'Delete', 'mapify' ); ?></a>
         </div>
     </li>
 </script>
@@ -32,14 +85,6 @@ $meta = new Mapify_Meta();
             <?php // esc_html_e( 'Locations', 'mapify' ); ?>
             <div class="location-actions">
                 <a class="new-marker first-menu" data-action="new-marker" href="#"><?php esc_html_e( 'Add Location', 'mapify' ); ?></a>
-                <?php /*
-                <div class="sub-menu-actions">
-                    <a class="new-marker" data-action="new-marker" href="#"><?php esc_html_e( 'Add Marker', 'mapify' ); ?></a>
-                    <a class="new-polygon" data-action="new-polygon" href="#"><?php esc_html_e( 'Add Polygon', 'mapify' ); ?></a>
-                    <a class="new-direction" data-action="new-direction" href="#"><?php esc_html_e( 'Add Direction', 'mapify' ); ?></a>
-                    <a class="new-circle" data-action="new-circle" href="#"><?php esc_html_e( 'Add Circle', 'mapify' ); ?></a>
-                </div>
-                */ ?>
             </div>
             <a href="#" class="locations-close"></a>
         </h2>
@@ -69,19 +114,15 @@ $meta = new Mapify_Meta();
                                     <?php esc_html_e( 'Map Settings', 'mapify' ); ?>
                                 </h2>
                                 <form  class="mapify-map-form">
-                                    <input type="hidden" name="map_id" value="{{ data.map_id }}">
                                     <?php
                                     echo $meta->render( $meta->get_map_settings() );
                                     ?>
                                 </form>
-
-
                             </div>
                             <form class="compat-item"></form>
                         </div>
                         <div class="attachments ">
                             <div class="map-preview"></div>
-                            <button class="button-primary button-new-action" type="button">Done</button>
                         </div>
                     </div>
                 </div>

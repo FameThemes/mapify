@@ -8,11 +8,41 @@ class Mapify_Admin {
         add_action('admin_enqueue_scripts', array( $this, 'scripts' ) );
         add_action( 'wp_ajax_mapify_save', array( $this, 'ajax_save' ) );
         add_action( 'wp_ajax_mapify_load_map', array( $this, 'ajax_load_map' ) );
+        add_action( 'wp_ajax_mapify_del_location', array( $this, 'ajax_del_location' ) );
 
     }
 
+    function ajax_del_location(){
+        $nonce = isset( $_POST['_nonce'] ) ?  $_POST['_nonce'] : '';
+        if ( ! wp_verify_nonce( $nonce, 'mapify_nonce_action' ) ) {
+            wp_die('security_check');
+        }
+        Mapify_Location()->delete( absint( $_POST['location_id'] ) );
+        wp_send_json_success( );
+        die();
+    }
+
     function ajax_load_map(){
-        die( is_admin() );
+        $nonce = isset( $_POST['_nonce'] ) ?  $_POST['_nonce'] : '';
+        if ( ! wp_verify_nonce( $nonce, 'mapify_nonce_action' ) ) {
+            wp_die('security_check');
+        }
+        $map_id = $_POST['map_id'];
+        $map_data = Mapify_Map()->get_data( $map_id );
+        $locations = Mapify_Location()->get_locations(array( 'map_id' => $map_id ) );
+        if ( count( $locations ) ) {
+            if (!$map_data['center_latitude'] && !$map_data['center_latitude']) {
+                $first_location = current($locations);
+                $map_data['center_latitude'] = $first_location['latitude'];
+                $map_data['center_longitude'] = $first_location['longitude'];
+                reset($locations);
+            }
+        }
+        wp_send_json_success( array(
+            'map' => $map_data,
+            'locations' => $locations
+        ) );
+        die();
     }
 
     function ajax_save( ) {
@@ -105,7 +135,6 @@ class Mapify_Admin {
             'locations' => $location_ids
         ) );
         die();
-
 
     }
 

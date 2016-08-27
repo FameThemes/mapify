@@ -20,6 +20,8 @@ class Mapify_Location {
             */
         ) );
 
+       // print_r( $args );
+
         $post_id = null;
         if ( $args['location_id'] > 0 ) {
             $post = get_post( $args['location_id'] );
@@ -32,9 +34,11 @@ class Mapify_Location {
             $post_data = array();
             if ( isset( $args['title'] ) ) {
                 $post_data['post_title'] = trim( $args['title'] );
+                unset( $args['title'] );
             }
             if ( isset( $args['info'] ) ) {
                 $post_data['post_content'] = $args['info'];
+                unset( $args['info'] );
             }
             $post_data['post_type'] = 'location';
             $post_data['post_status'] = 'publish';
@@ -50,30 +54,20 @@ class Mapify_Location {
                 $post_data['post_parent']   = $args['map_id'];
             }
 
-            $l_id = wp_insert_post($post_data);
-            if ( ! $l_id || is_wp_error( $l_id ) ) {
+            $post_id = wp_insert_post($post_data);
+            if ( ! $post_id || is_wp_error( $post_id ) ) {
                 return false;
             }
         }
 
-
-        $post_meta = array(
-            'address',
-            'latitude',
-            'longitude',
-            'state',
-            'postal_code',
-            'city',
-            'country',
-            'redirect_url',
-            'marker',
-            'map_id',
-        );
+        $location_fields = $this->get_meta_fields();
 
         if ( $post_id && ! is_wp_error( $post_id ) ) {
-            foreach ( $post_meta as $meta_key ) {
-                $val = isset( $args[ $meta_key ] ) ? $args[ $meta_key ] : '';
-                update_post_meta( $post_id, '_location_'.$meta_key, $val );
+            foreach ( $location_fields as $k => $v ) {
+                if ( isset( $args[ $k ] ) ) {
+                    update_post_meta( $post_id, '_location_'.$k, $args[ $k ] );
+                } else {
+                }
             }
         } else {
             $post_id = false;
@@ -84,6 +78,10 @@ class Mapify_Location {
 
     public function update( $args = array(), $map_id = '' ){
         return self::insert( $args, $map_id );
+    }
+
+    public function delete( $location_id ){
+        return wp_delete_post( $location_id, true );
     }
 
 
@@ -102,8 +100,6 @@ class Mapify_Location {
         $data['location_id'] = $p->ID;
         $data['info'] = $p->post_content;
         return $data;
-
-
     }
 
     function get_locations( $args = array(), &$query = false ){
