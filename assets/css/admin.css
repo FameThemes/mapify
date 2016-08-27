@@ -264,6 +264,18 @@
     display: block;
 }
 
+.mapify-center {
+    float: right;
+}
+.mapify-modal .media-toolbar-primary .spinner {
+    margin-top: 20px;
+    margin-left: 10px;
+    display: none;
+}
+.mapify-modal.saving .media-toolbar-primary .spinner {
+    visibility: visible;
+    display: block;
+}
 
 /* InfoWindow */
 .gmap-infowindow {

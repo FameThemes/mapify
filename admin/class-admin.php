@@ -101,9 +101,9 @@ class Mapify_Admin {
 
         // Update map meta
         $map_settings = $meta->get_map_fields();
-        foreach ( $data['map'] as $k => $v ) {
-            if ( isset( $map_settings[ $k ] ) ) {
-                update_post_meta( $map_id, '_map_'.$k, $v );
+        foreach ( $map_settings as $k => $v ) {
+            if ( isset( $data['map'][ $k ] ) ) {
+                update_post_meta( $map_id, '_map_'.$k, $data['map'][ $k ] );
             }
         }
 
@@ -159,6 +159,8 @@ class Mapify_Admin {
             'nonce' => wp_create_nonce( 'mapify_nonce_action' ),
             'confirm' => esc_html__( 'Are your sure ?', 'mapify' ),
             'untitled' => esc_html__( 'Untitled', 'mapify' ),
+            'saving' => esc_html__( 'Saving...', 'mapify' ),
+            'save_changes' => esc_html__( 'Save Changes', 'mapify' ),
             'helps' => array(
                 'new_marker' => esc_html__( 'Right click on the map to add marker.', 'mapify' ),
                 'new_polygon' => esc_html__( 'Right click on the map to add marker, Click Done button to complete.', 'mapify' ),

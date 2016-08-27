@@ -57,7 +57,7 @@ class Mapify_Meta {
 
                 $html .= '<select type="text" name="'.esc_attr( $setting['id'] ).'">';
                 foreach ( ( array ) $setting['options'] as $k => $label ) {
-                    $html .= '<option <# if ( '.$js_val_name.' == "'.esc_attr( $k ).'" ) { #> checked="checked" <# } #>  value="'.esc_attr( $k ).'">'.$label.'</option>';
+                    $html .= '<option <# if ( '.$js_val_name.' == "'.esc_attr( $k ).'" ) { #> selected="selected" <# } #>  value="'.esc_attr( $k ).'">'.$label.'</option>';
                 }
                 $html .= '</select>';
 

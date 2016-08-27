@@ -61,25 +61,9 @@ class Mapify_Map {
                         'id' => 'street_view_controller'
                     ),
                     array(
-                        'title' => esc_html__( 'Default Zoom', 'mapify' ),
+                        'title' => esc_html__( 'Zoom Level', 'mapify' ),
                         'type' => 'text',
-                        'id' => 'default_zoom'
-                    ),
-                    array(
-                        'title' => esc_html__( 'Minimum Zoom', 'mapify' ),
-                        'type' => 'text',
-                        'id' => 'minimum_zoom'
-                    ),
-                    array(
-                        'title' => esc_html__( 'Maximum Zoom', 'mapify' ),
-                        'type' => 'text',
-                        'id' => 'maximum_zoom'
-                    ),
-
-                    array(
-                        'title' => esc_html__( 'Center Address', 'mapify' ),
-                        'type' => 'text',
-                        'id' => 'center_address'
+                        'id' => 'zoom_level'
                     ),
                     array(
                         'title' => esc_html__( 'Center Latitude', 'mapify' ),

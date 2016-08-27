@@ -82,7 +82,6 @@ $meta = new Mapify_Meta();
 <script type="text/html" id="mapify-locations-template">
     <div class="locations-sidebar image-details">
         <h2>
-            <?php // esc_html_e( 'Locations', 'mapify' ); ?>
             <div class="location-actions">
                 <a class="new-marker first-menu" data-action="new-marker" href="#"><?php esc_html_e( 'Add Location', 'mapify' ); ?></a>
             </div>
@@ -131,7 +130,11 @@ $meta = new Mapify_Meta();
                         <div class="action-msg"></div>
                         <div class="media-toolbar-secondary"></div>
                         <div class="media-toolbar-primary search-form">
+
                             <button type="button" disabled="disabled" class="mapify-save button media-button button-primary button-large media-button-select"><?php esc_html_e( 'Save Changes', 'mapify' ); ?></button>
+                            <span class="spinner"></span>
+                            <button type="button" class="mapify-center button media-button button-secondary button-large"><?php esc_html_e( 'Set Center', 'mapify' ); ?></button>
+
                         </div>
                     </div>
                 </div>
