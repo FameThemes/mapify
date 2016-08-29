@@ -22,6 +22,7 @@ class Mapify {
         $this->path = trailingslashit( plugin_dir_path( __FILE__) );
         $this->api_key = get_option( 'mapify_google_map_api_key' );
         $this->includes();
+        $this->init();
     }
 
     function includes()
@@ -39,23 +40,40 @@ class Mapify {
         wp_enqueue_script( 'google-maps-api', 'https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyASkFdBVeZHxvpMVIOSfk2hGiIzjOzQeFY', null, null );
     }
 
-    function scripts()
+    function css(){
+        wp_enqueue_style( 'mapify', $this->url.'assets/css/mapify.css', array() );
+    }
+
+    function js()
     {
         $this->load_gmap_js();
-        wp_enqueue_script( 'google-maps', GMAP_URL.'assets/js/map-metabox.js', array( 'jquery', 'google-maps-api', 'json2' ) );
-        wp_enqueue_style( 'google-maps', GMAP_URL.'assets/css/metabox.css', array() );
-        wp_localize_script( 'google-maps', 'GMAP', array(
+        wp_enqueue_script( 'mapify', $this->url.'assets/js/mapify.js', array( 'jquery', 'google-maps-api', 'json2' ) );
+        wp_localize_script( 'google-maps', 'Mapify', array(
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce( 'gmap_nonce_action' ),
-            'confirm' => esc_html__( 'Are your sure ?' ),
+            'nonce' => wp_create_nonce( 'mapify_nonce_action' ),
         ) );
+    }
+
+    function shortcode( $atts, $content = null ){
+        $atts = shortcode_atts( array(
+            'id' => '',
+        ), $atts );
+        $id = absint( $atts['id'] );
+
+        return '<div class="mapify" data-map-id="'.esc_attr( $id ).'">Loading mapify....</div>';
     }
 
     function init()
     {
+        if ( ! is_admin() ) {
+            add_action( 'wp_enqueue_scripts', array( $this, 'css' ) );
+        }
 
+        add_shortcode( 'mapify', array( $this, 'shortcode' ) );
 
     }
+
+
 
 
 }

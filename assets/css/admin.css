@@ -264,6 +264,11 @@
 }
 .mapify-map-item .shortcode {
     margin-top: 10px;
+    display: block;
+    width: 100%;
+    background: transparent;
+    color: #ffffff;
+    border: none;
 }
 
 .mapify-maps .gmap-preview-wrapper{
