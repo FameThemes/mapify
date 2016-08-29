@@ -324,6 +324,9 @@
 .field-input .dashicons-editor-help {
     float: right;
 }
+.field-input.field-checkbox .dashicons-editor-help {
+    float: none;
+}
 
 .help-tooltip:after {
     border-left: solid transparent 10px;

@@ -58,7 +58,8 @@ class Mapify_Map {
                     array(
                         'title' => esc_html__( 'Enable Street-View-Controller', 'mapify' ),
                         'type' => 'checkbox',
-                        'id' => 'street_view_controller'
+                        'id' => 'street_view_controller',
+                        'help' => esc_html__( 'Map width, can use % or px example: 100%, 500px, ...', 'mapify' ),
                     ),
                     array(
                         'title' => esc_html__( 'Zoom Level', 'mapify' ),
@@ -89,13 +90,13 @@ class Mapify_Map {
                         'title' => esc_html__( 'Map Width', 'mapify' ),
                         'type' => 'text',
                         'id' => 'map_width',
-                        'help' => esc_html__( 'Map width, Can use % or px example: 100%, 500px,...', 'mapify' ),
+                        'help' => esc_html__( 'Map width, can use % or px example: 100%, 500px, ...', 'mapify' ),
                     ),
                     array(
                         'title' => esc_html__( 'Map Height', 'mapify' ),
                         'type' => 'text',
                         'id' => 'map_height',
-                        'help' => esc_html__( 'Map height, Can use % or px example: 100%, 500px,...', 'mapify' ),
+                        'help' => esc_html__( 'Map height, can use % or px example: 100%, 500px, ...', 'mapify' ),
                     ),
                     array(
                         'title' => esc_html__( 'Map Type', 'mapify' ),
