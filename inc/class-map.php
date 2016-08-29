@@ -66,6 +66,16 @@ class Mapify_Map {
                         'id' => 'zoom_level'
                     ),
                     array(
+                        'title' => esc_html__( 'Max Zoom', 'mapify' ),
+                        'type' => 'text',
+                        'id' => 'zoom_max'
+                    ),
+                    array(
+                        'title' => esc_html__( 'Min Zoom', 'mapify' ),
+                        'type' => 'text',
+                        'id' => 'zoom_min'
+                    ),
+                    array(
                         'title' => esc_html__( 'Center Latitude', 'mapify' ),
                         'type' => 'text',
                         'id' => 'center_latitude'
@@ -78,17 +88,20 @@ class Mapify_Map {
                     array(
                         'title' => esc_html__( 'Map Width', 'mapify' ),
                         'type' => 'text',
-                        'id' => 'map_width'
+                        'id' => 'map_width',
+                        'help' => esc_html__( 'Map width, Can use % or px example: 100%, 500px,...', 'mapify' ),
                     ),
                     array(
                         'title' => esc_html__( 'Map Height', 'mapify' ),
                         'type' => 'text',
-                        'id' => 'map_height'
+                        'id' => 'map_height',
+                        'help' => esc_html__( 'Map height, Can use % or px example: 100%, 500px,...', 'mapify' ),
                     ),
                     array(
                         'title' => esc_html__( 'Map Type', 'mapify' ),
                         'type' => 'select',
                         'id' => 'map_type',
+                        'default' => 'ROADMAP',
                         'options' => array(
                             'ROADMAP'   => esc_html__( 'ROADMAP', 'mapify' ),
                             'SATELLITE' => esc_html__( 'SATELLITE', 'mapify' ),

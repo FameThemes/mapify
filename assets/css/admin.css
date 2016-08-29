@@ -301,6 +301,43 @@
     display: block;
 }
 
+/*Tooltip*/
+.help-tooltip {
+    background: #32373C;
+    padding: 10px;
+    position: fixed;
+    display: none;
+    top: 0px;
+    left: 0px;
+    z-index: 999999999;
+    color: #ffffff;
+    font-size: 12px;
+    max-width: 200px;
+}
+.help-tooltip a {
+    color: #d36c50;
+}
+.help-tooltip a:hover {
+    color: #d36c50;
+    text-decoration: underline;
+}
+.field-input .dashicons-editor-help {
+    float: right;
+}
+
+.help-tooltip:after {
+    border-left: solid transparent 10px;
+    border-right: solid transparent 10px;
+    border-top: solid #32373C 10px;
+    bottom: -10px;
+    content: " ";
+    height: 0;
+    left: 50%;
+    margin-left: -13px;
+    position: absolute;
+    width: 0;
+}
+
 /* InfoWindow */
 .gmap-infowindow {
     width: 300px;

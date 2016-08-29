@@ -832,7 +832,7 @@ var mapify = {
                         }
                     }
                 });
-            } // end comfirm
+            } // end confirm
         }); // end del
 
 
@@ -842,6 +842,50 @@ var mapify = {
             updateViewPort();
 
         });
+
+        map_modal.on( 'mousemove', '.field-input .dashicons-editor-help', function( e ){
+            var f = $( this).closest( '.field-input' );
+            var icon = $( this );
+            var h, w, t, l;
+            if ( window.mapify_tooltip ) {
+
+                h = window.mapify_tooltip.outerHeight();
+                w = window.mapify_tooltip.outerWidth();
+                l = e.pageX - w / 2;
+                if ( l <= 0 ) {
+                    l = 0;
+                }
+                window.mapify_tooltip.css({
+                    top: e.pageY - ( h + icon.height() ),
+                    left: l
+                });
+            } else {
+                t = f.find('.help-tooltip');
+                window.mapify_tooltip = t.clone();
+                $('body').append(window.mapify_tooltip);
+                window.mapify_tooltip.css({
+                    top: e.pageY + 15,
+                    left: e.pageX,
+                    display: 'block',
+                });
+
+                h = t.outerHeight();
+                w = t.outerWidth();
+                l = e.pageX - w / 2;
+                if ( l <= 0 ) {
+                    l = 0;
+                }
+                window.mapify_tooltip.css({
+                    top: e.pageY - ( h + icon.height() ),
+                    left: l,
+                });
+            }
+
+        } );
+        map_modal.on( 'mouseleave', '.field-input .dashicons-editor-help', function( e ){
+            window.mapify_tooltip.remove();
+            window.mapify_tooltip = false;
+        } );
 
 
     }

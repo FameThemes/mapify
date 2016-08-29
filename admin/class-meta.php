@@ -43,6 +43,7 @@ class Mapify_Meta {
             'title' => '',
             'type'  => '',
             'id'    => '',
+            'help'  => '',
         ) );
         $js_val_name = 'data.'.esc_attr( $setting['id'] );
         $js_value = '{{ '.$js_val_name.' }}';
@@ -54,32 +55,56 @@ class Mapify_Meta {
                 }
                 $html .= '<div class="field-input field-'.esc_attr( $setting['type'] ).'">';
                 $html .= '<label class="label">'.$setting['title'];
-
+                if ( $setting['help'] ) {
+                    $html .= '<span class="dashicons dashicons-editor-help"></span>';
+                }
                 $html .= '<select type="text" name="'.esc_attr( $setting['id'] ).'">';
                 foreach ( ( array ) $setting['options'] as $k => $label ) {
                     $html .= '<option <# if ( '.$js_val_name.' == "'.esc_attr( $k ).'" ) { #> selected="selected" <# } #>  value="'.esc_attr( $k ).'">'.$label.'</option>';
                 }
                 $html .= '</select>';
-
-                $html .= '</label></div>';
+                $html .= '</label>';
+                if ( $setting['help'] ) {
+                    $html .= '<div class="help-tooltip">'.$setting['help'].'</div>';
+                }
+                $html .= '</div>';
                 break;
             case 'checkbox' :
                 $html .= '<div class="field-input field-'.esc_attr( $setting['type'] ).'">';
                 $html .= '<label class="label">';
                 $html .= '<input type="checkbox" <# if ( '.$js_val_name.' ) { #> checked="checked" <# } #> value="1" name="'.esc_attr( $setting['id'] ).'" value="'.$js_value.'">';
-                $html .= $setting['title'].'</label></div>';
+                $html .= $setting['title'].'</label>';
+                if ( $setting['help'] ) {
+                    $html .= '<span class="dashicons dashicons-editor-help"></span>';
+                    $html .= '<div class="help-tooltip">'.$setting['help'].'</div>';
+                }
+                $html .= '</div>';
                 break;
             case 'textarea' :
                 $html .= '<div class="field-input field-'.esc_attr( $setting['type'] ).'">';
                 $html .= '<label class="label">'.$setting['title'];
+                if ( $setting['help'] ) {
+                    $html .= '<span class="dashicons dashicons-editor-help"></span>';
+                }
                 $html .= '<textarea name="'.esc_attr( $setting['id'] ).'">'.$js_value.'</textarea>';
-                $html .= '</label></div>';
+                $html .= '</label>';
+                if ( $setting['help'] ) {
+                    $html .= '<div class="help-tooltip">'.$setting['help'].'</div>';
+                }
+                $html .= '</div>';
                 break;
             default:
                 $html .= '<div class="field-input field-text">';
                 $html .= '<label class="label">'.$setting['title'];
+                if ( $setting['help'] ) {
+                    $html .= '<span class="dashicons dashicons-editor-help"></span>';
+                }
                 $html .= '<input type="text" name="'.esc_attr( $setting['id'] ).'" value="'.$js_value.'">';
-                $html .= '</label></div>';
+                $html .= '</label>';
+                if ( $setting['help'] ) {
+                    $html .= '<div class="help-tooltip">'.$setting['help'].'</div>';
+                }
+                $html .= '</div>';
         }
 
         return $html;

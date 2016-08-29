@@ -13,12 +13,15 @@ class Mapify_Admin {
         add_action( 'wp_ajax_mapify_load_map', array( $this, 'ajax_load_map' ) );
         add_action( 'wp_ajax_mapify_del_map', array( $this, 'ajax_del_map' ) );
         add_action( 'wp_ajax_mapify_del_location', array( $this, 'ajax_del_location' ) );
-
         add_action( 'wp_ajax_mapify_load_maps', array( $this, 'ajax_load_maps' ) );
 
     }
 
     function ajax_load_maps(){
+        $nonce = isset( $_REQUEST['_nonce'] ) ?  $_REQUEST['_nonce'] : '';
+        if ( ! wp_verify_nonce( $nonce, 'mapify_nonce_action' ) ) {
+            wp_die('security_check');
+        }
         $maps = get_posts( array(
             'posts_per_page'   => -1,
             'post_type'   => 'map',
@@ -51,11 +54,11 @@ class Mapify_Admin {
     }
 
     function ajax_load_map(){
-        $nonce = isset( $_POST['_nonce'] ) ?  $_POST['_nonce'] : '';
+        $nonce = isset( $_REQUEST['_nonce'] ) ?  $_REQUEST['_nonce'] : '';
         if ( ! wp_verify_nonce( $nonce, 'mapify_nonce_action' ) ) {
             wp_die('security_check');
         }
-        $map_id = $_POST['map_id'];
+        $map_id = absint( $_REQUEST['map_id'] );
         $map_data = Mapify_Map()->get_data( $map_id );
         $locations = Mapify_Location()->get_locations(array( 'map_id' => $map_id ) );
         if ( count( $locations ) ) {
@@ -68,7 +71,7 @@ class Mapify_Admin {
         }
         wp_send_json_success( array(
             'map' => $map_data,
-            'locations' => $locations
+            'locations' => $locations,
         ) );
         die();
     }
@@ -89,7 +92,6 @@ class Mapify_Admin {
         }
 
         $is_new = false;
-
         $meta = new Mapify_Meta();
         if ( isset( $data['map_id'] ) ) {
             $map_id = absint( $data['map_id'] );
@@ -107,7 +109,6 @@ class Mapify_Admin {
         }
 
         $map_title = isset( $data['map']['map_title'] ) ? $data['map']['map_title'] : esc_html__( 'Untitled', 'mapify' );
-
 
         if ( ! $map_id || ! ( $post = get_post( $map_id ) ) ) { // New map
             $post_id = wp_insert_post( array(
@@ -138,7 +139,7 @@ class Mapify_Admin {
             }
         }
 
-        // $location_fileds = $meta->get_locations_fields();
+        // $location_fields = $meta->get_locations_fields();
         $location_ids = array();
         $l = new Mapify_Location();
         foreach ( $data['locations'] as $key => $location ) {

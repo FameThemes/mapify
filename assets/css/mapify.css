@@ -1,0 +1,34 @@
+.mapify {
+    width: 100%;
+    height: 100%;
+    padding: 100% 0px 0px 0px;
+    display: block;
+    position: relative;
+}
+.mapify-gmap {
+    position: absolute;
+    top:0px; left: 0; bottom: 0; right: 0;
+}
+
+/* InfoWindow */
+.mapify-infowindow {
+    width: 300px;
+}
+.mapify-infowindow * {
+    box-sizing: border-box;
+}
+.info-field {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.info-field::after {
+    clear: both; content: " "; display: block;
+}
+.info-field.half .label {
+    width: 40%;
+    float: left;
+}
+.info-field.half .value {
+    width: 60%;
+    float: right;
+}

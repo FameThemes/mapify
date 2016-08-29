@@ -47,20 +47,22 @@ class Mapify {
     function js()
     {
         $this->load_gmap_js();
-        wp_enqueue_script( 'mapify', $this->url.'assets/js/mapify.js', array( 'jquery', 'google-maps-api', 'json2' ) );
-        wp_localize_script( 'google-maps', 'Mapify', array(
+        wp_enqueue_script( 'mapify', $this->url.'assets/js/mapify.js', array( 'jquery', 'google-maps-api', 'json2', 'underscore' ) );
+        wp_localize_script( 'mapify', 'Mapify', array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce( 'mapify_nonce_action' ),
         ) );
     }
 
     function shortcode( $atts, $content = null ){
+        $this->js();
         $atts = shortcode_atts( array(
             'id' => '',
         ), $atts );
         $id = absint( $atts['id'] );
+        add_action( 'wp_footer', array( 'Mapify_Location', 'info_tpl' ) );
 
-        return '<div class="mapify" data-map-id="'.esc_attr( $id ).'">Loading mapify....</div>';
+        return '<div class="mapify" data-map-id="'.esc_attr( $id ).'"><div class="mapify-gmap">'.esc_html__( 'Loading mapify....' , 'mapify' ).'</div></div>';
     }
 
     function init()

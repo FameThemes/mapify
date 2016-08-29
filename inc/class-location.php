@@ -139,6 +139,62 @@ class Mapify_Location {
         return $fields;
     }
 
+    static function info_tpl(){
+    ?>
+    <script type="text/html" id="mapify-infowindow-template">
+        <div class="infowindow mapify-infowindow">
+            <# if ( data.title ) { #>
+                <div class="info-field">
+                <strong class="value">{{ data.title }}</strong>
+                </div>
+            <# } #>
+
+            <# if ( data.address ) { #>
+                <div class="info-field half">
+                    <div class="label"><?php esc_html_e( 'Address', 'mapify' ) ?></div>
+                    <div class="value">{{ data.address }}</div>
+                </div>
+            <# } #>
+
+            <# if (  data.postal_code ) { #>
+                <div class="info-field half">
+                <div class="label"><?php esc_html_e( 'Postal Code', 'mapify' ) ?></div>
+                <div class="value">{{ data.postal_code }}</div>
+                </div>
+            <# } #>
+
+            <# if (  data.city ) { #>
+                <div class="info-field half">
+                <div class="label"><?php esc_html_e( 'City', 'mapify' ) ?></div>
+                <div class="value">{{ data.city }}</div>
+                </div>
+            <# } #>
+
+            <# if (  data.state ) { #>
+                <div class="info-field half">
+                <div class="label"><?php esc_html_e( 'State', 'mapify' ) ?></div>
+                <div class="value">{{ data.state }}</div>
+                </div>
+            <# } #>
+
+            <# if ( data.country ) { #>
+                <div class="info-field half">
+                <div class="label"><?php esc_html_e( 'Country', 'mapify' ) ?></div>
+                <div class="value">{{ data.country }}</div>
+                </div>
+            <# } #>
+
+            <# if (  data.infowindow ) { #>
+                <div class="info-field field-infowindow">
+                    <div class="value">{{ data.infowindow }}</div>
+                </div>
+            <# } #>
+        </div>
+    </script>
+    <?php
+
+    }
+
     function get_meta_settings(){
         $location_settings = array(
             array(

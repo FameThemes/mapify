@@ -12,42 +12,42 @@ $meta = new Mapify_Meta();
         <# } #>
         <# if (  data.latitude || data.longitude ) { #>
             <div class="info-field half">
-                <div class="label"><?php esc_html_e( 'Latitude', 'gmap' ) ?></div>
+                <div class="label"><?php esc_html_e( 'Latitude', 'mapify' ) ?></div>
                 <div class="value">{{ data.latitude }}</div>
             </div>
         <# } #>
 
         <# if ( data.longitude ) { #>
             <div class="info-field half">
-                <div class="label"><?php esc_html_e( 'Longitude', 'gmap' ) ?></div>
+                <div class="label"><?php esc_html_e( 'Longitude', 'mapify' ) ?></div>
                 <div class="value">{{ data.longitude }}</div>
             </div>
         <# } #>
 
         <# if (  data.postal_code ) { #>
             <div class="info-field half">
-                <div class="label"><?php esc_html_e( 'Postal Code', 'gmap' ) ?></div>
+                <div class="label"><?php esc_html_e( 'Postal Code', 'mapify' ) ?></div>
                 <div class="value">{{ data.postal_code }}</div>
             </div>
         <# } #>
 
         <# if (  data.city ) { #>
             <div class="info-field half">
-                <div class="label"><?php esc_html_e( 'City', 'gmap' ) ?></div>
+                <div class="label"><?php esc_html_e( 'City', 'mapify' ) ?></div>
                 <div class="value">{{ data.city }}</div>
             </div>
         <# } #>
 
         <# if (  data.state ) { #>
             <div class="info-field half">
-                <div class="label"><?php esc_html_e( 'State', 'gmap' ) ?></div>
+                <div class="label"><?php esc_html_e( 'State', 'mapify' ) ?></div>
                 <div class="value">{{ data.state }}</div>
             </div>
         <# } #>
 
         <# if (  data.country ) { #>
             <div class="info-field half">
-                <div class="label"><?php esc_html_e( 'Country', 'gmap' ) ?></div>
+                <div class="label"><?php esc_html_e( 'Country', 'mapify' ) ?></div>
                 <div class="value">{{ data.country }}</div>
             </div>
         <# } #>
