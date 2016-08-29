@@ -8,8 +8,33 @@ class Mapify_Admin {
         add_action('admin_enqueue_scripts', array( $this, 'scripts' ) );
         add_action( 'wp_ajax_mapify_save', array( $this, 'ajax_save' ) );
         add_action( 'wp_ajax_mapify_load_map', array( $this, 'ajax_load_map' ) );
+        add_action( 'wp_ajax_mapify_del_map', array( $this, 'ajax_del_map' ) );
         add_action( 'wp_ajax_mapify_del_location', array( $this, 'ajax_del_location' ) );
 
+        add_action( 'wp_ajax_mapify_load_maps', array( $this, 'ajax_load_maps' ) );
+
+    }
+
+    function ajax_load_maps(){
+        $maps = get_posts( array(
+            'posts_per_page'   => -1,
+            'post_type'   => 'map',
+        ) );
+        $ajax_maps = array();
+        foreach ( $maps as $m ) {
+            $ajax_maps[$m->ID] = Mapify_Map()->get_data($m->ID);
+        }
+        wp_send_json_success( $ajax_maps );
+    }
+
+    function ajax_del_map(){
+        $nonce = isset( $_POST['_nonce'] ) ?  $_POST['_nonce'] : '';
+        if ( ! wp_verify_nonce( $nonce, 'mapify_nonce_action' ) ) {
+            wp_die('security_check');
+        }
+        Mapify_Map()->delete( absint( $_POST['map_id'] ) );
+        wp_send_json_success( );
+        die();
     }
 
     function ajax_del_location(){
@@ -60,6 +85,8 @@ class Mapify_Admin {
             $data['locations'] = array();
         }
 
+        $is_new = false;
+
         $meta = new Mapify_Meta();
         if ( isset( $data['map_id'] ) ) {
             $map_id = absint( $data['map_id'] );
@@ -87,6 +114,7 @@ class Mapify_Admin {
             ) );
             if ( $post_id && ! is_wp_error( $post_id ) ) {
                 $map_id =  $post_id;
+                $is_new = true;
             } else {
                 wp_send_json_error( esc_html__( 'Can not save map', 'mapify' ) );
             }
@@ -130,10 +158,16 @@ class Mapify_Admin {
             }
         }
 
-        wp_send_json_success( array(
+        $r_data =  array(
             'map_id' => $map_id,
-            'locations' => $location_ids
-        ) );
+            'locations' => $location_ids,
+            'is_new' => $is_new
+        );
+        if ( $is_new  && $map_id ) {
+            $r_data['map_data'] = Mapify_Map()->get_data( $map_id );
+        }
+
+        wp_send_json_success( $r_data );
         die();
 
     }
@@ -197,7 +231,7 @@ class Mapify_Admin {
                 'callback' => array( $this, 'display_maps' )
             ),
             'settings' => array(
-                'title' => esc_html__( 'Maps', 'mapify' ),
+                'title' => esc_html__( 'Settings', 'mapify' ),
                 'callback' => array( $this, 'display_settings' )
             )
         );

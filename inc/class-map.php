@@ -235,6 +235,19 @@ class Mapify_Map {
 
         return $countries;
     }
+
+    function delete( $map_id ){
+        $map = get_post( $map_id );
+        if ( $map ) {
+            global $wpdb;
+            wp_delete_post( $map->ID );
+            $location_ids = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_parent = %d AND post_type = 'location'", $map->ID ) );
+            // Delete all location of this map
+            foreach ( $location_ids as $_id ) {
+                wp_delete_post( $_id );
+            }
+        }
+    }
 }
 
 function Mapify_Map(){
