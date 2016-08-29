@@ -14,11 +14,13 @@ Domain Path: /languages
 class Mapify {
     public $url;
     public $path;
+    public $api_key;
 
     function __construct()
     {
         $this->url  = trailingslashit( plugins_url('', __FILE__) );
         $this->path = trailingslashit( plugin_dir_path( __FILE__) );
+        $this->api_key = get_option( 'mapify_google_map_api_key' );
         $this->includes();
     }
 

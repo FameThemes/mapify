@@ -151,8 +151,12 @@ var mapify = {
             var map_item = $( this );
             var map_id = map_item.attr( 'data-map-id' );
             var del_btn = map_item.find( '.del-map' );
-
             var action;
+
+            if ( $(e.target).is( '.shortcode' ) ) {
+                return;
+            }
+
             if ( del_btn.is(e.target) || del_btn.has(e.target).length > 0 )
             {
                 action = 'mapify_del_map';
@@ -164,7 +168,6 @@ var mapify = {
             if ( 'mapify_del_map' === action ) {
                 _do = confirm( mapify_config.confirm );
             }
-            console.log( action );
 
             if ( _do ) {
                 $.ajax({

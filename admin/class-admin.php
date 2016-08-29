@@ -1,9 +1,12 @@
 <?php
 class Mapify_Admin {
     public $page_url;
+    public $api_key;
     function __construct()
     {
         $this->page_url = add_query_arg( array( 'page' => 'mapify' ), admin_url( 'upload.php' ) ) ;
+        $this->api_key = get_option( 'mapify_google_map_api_key' );
+
         add_action('admin_menu', array( $this, 'add_menu' ) );
         add_action('admin_enqueue_scripts', array( $this, 'scripts' ) );
         add_action( 'wp_ajax_mapify_save', array( $this, 'ajax_save' ) );
@@ -172,8 +175,6 @@ class Mapify_Admin {
 
     }
 
-
-
     function add_menu()
     {
         add_media_page( esc_html__('Mapify','mapify'), esc_html__('Mapify','mapify'), 'manage_options', 'mapify', array( $this, 'display' ) );
@@ -198,7 +199,7 @@ class Mapify_Admin {
             'helps' => array(
                 'new_marker' => esc_html__( 'Right click on the map to add marker.', 'mapify' ),
                 'new_polygon' => esc_html__( 'Right click on the map to add marker, Click Done button to complete.', 'mapify' ),
-                'new_circle' => esc_html__( 'Right click on the map to add circl.', 'mapify' ),
+                'new_circle' => esc_html__( 'Right click on the map to add circle.', 'mapify' ),
             )
         ) );
     }
@@ -219,9 +220,41 @@ class Mapify_Admin {
     {
         include Mapify()->path.'admin/templates/maps.php';
     }
+
+    function save_settings(){
+        if ( isset( $_POST['submit'] ) ) {
+            $nonce = isset($_POST['_nonce']) ? $_POST['_nonce'] : '';
+            if (!wp_verify_nonce($nonce, 'mapify_nonce_action')) {
+                wp_die('security_check');
+            }
+
+            if (isset($_POST['mapify_api_key'])) {
+                update_option('mapify_google_map_api_key', sanitize_text_field($_POST['mapify_api_key']));
+                $this->api_key = get_option( 'mapify_google_map_api_key' );
+            }
+        }
+    }
     function display_settings()
     {
-        echo 'settings';
+        $current_tab = Mapify_Admin()->get_current_tab();
+        ?>
+        <form method="post" class="mapify-form-settings" action="<?php echo esc_url( add_query_arg( array( 'tab' => $current_tab ), $this->page_url ) ); ?>">
+            <?php wp_nonce_field('mapify_nonce_action', '_nonce' ); ?>
+            <table class="form-table">
+                <tbody>
+                <tr>
+                    <th scope="row"><label for="api_key"><?php esc_html_e( 'Google Map API Key', 'mapify' ); ?></label></th>
+                    <td>
+                        <input type="text" class="regular-text" value="<?php echo esc_attr( $this->api_key ); ?>" id="api_key" name="mapify_api_key">
+                        <p class="description"><?php printf( esc_html__( 'Get Google map API key %1$s', 'mapify' ), '<a href="https://developers.google.com/maps/documentation/javascript/get-api-key" target="_blank">'.esc_html__('Here', 'mapify').'</a>' ); ?></p>
+                    </td>
+                </tr>
+                <?php do_action( 'mapify_settings_more_fields' ); ?>
+                </tbody>
+            </table>
+            <p class="submit"><input type="submit" value="<?php esc_attr_e( 'Save Changes' ,'mapify' ); ?>" class="button button-primary" id="submit" name="submit"></p>
+        </form>
+        <?php
     }
 
     function get_tabs(){
@@ -245,14 +278,27 @@ class Mapify_Admin {
         $current_tab = Mapify_Admin()->get_current_tab();
         $tabs =  $this->get_tabs();
         include Mapify()->path.'admin/templates/map.php';
+        if ( isset( $_POST['submit'] ) ) {
+            $this->save_settings();
+        }
         ?>
         <div class="wrap">
             <h1>
                 <?php esc_html_e( 'Mapify', 'mapify' ); ?>
+                <?php if ( $this->api_key ) { ?>
                 <a class="page-title-action mapify-new" href="#"> <?php esc_html_e( 'Add New', 'mapify' ); ?></a>
+                <?php } ?>
             </h1>
             <?php
+            // Maybe save settings
+            if ( isset( $_POST['submit'] ) ) {
+                ?>
+                <div class="updated settings-error notice is-dismissible" id="setting-error-settings_updated">
+                    <p><strong><?php esc_html_e( 'Settings saved.', 'mapify' ); ?></strong></p><button class="notice-dismiss" type="button"></button>
+                </div><?php
+            }
 
+            if ( $this->api_key ) {
             ?>
             <h2 class="nav-tab-wrapper">
                 <?php foreach ( $tabs as $id => $tab ){ ?>
@@ -274,6 +320,15 @@ class Mapify_Admin {
                 }
                 ?>
             </div>
+            <?php } else {
+                ?>
+                <div class="error settings-error notice" id="setting-error-settings_warning">
+                    <p><strong><?php esc_html_e( 'You must enter google map API to continue.', 'mapify' ); ?></strong></p>
+                </div>
+                <?php
+                add_action( 'mapify_admin_tab_content', $tabs[ 'settings' ]['callback'] );
+                do_action( 'mapify_admin_tab_content' );
+            } ?>
 
         </div>
         <?php

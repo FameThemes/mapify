@@ -240,7 +240,7 @@
     border: 1px solid #DDDDDD;
 }
 .mapify-map-item .map-meta {
-    padding: 20px;
+    padding: 10px;
     background: #32373C;
     color: #ffffff;
     margin-right: -1px;
@@ -257,10 +257,13 @@
 }
 .mapify-map-item .del-map {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 10px;
+    right: 10px;
     text-decoration: none;
     color: #ffffff;
+}
+.mapify-map-item .shortcode {
+    margin-top: 10px;
 }
 
 .mapify-maps .gmap-preview-wrapper{

@@ -9,6 +9,7 @@
         <div class="gmap-preview-wrapper"><div class="gmap-preview"></div></div>
         <div class="map-meta">
             <div class="map-name">{{ data.map_title }}</div>
+            <div class="shortcode">[mapify id="{{ data.map_id }}"]</div>
             <a class="del-map" data-map-id="{{ data.map_id }}" href="#"><span class="dashicons dashicons-trash"></span></a>
         </div>
     </div>
