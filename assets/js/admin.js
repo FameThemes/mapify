@@ -135,8 +135,6 @@ var mapify = {
             };
             new_map_data = $.extend( {}, mapify_config.default_map_data, new_map_data );
 
-            console.log( new_map_data );
-
             map_modal = $( getTemplate( 'mapify-map-template', new_map_data ) );
             $( 'body' ).append( map_modal );
             $( 'body' ).append( '<div class="media-modal-backdrop"></div>' );
@@ -637,6 +635,23 @@ var mapify = {
                     break;
                 case 'map_draggable':
                     gmap.setOptions( { draggable: mapifyFomat.toBool( value ) });
+                    break;
+                case 'map_type':
+                    switch ( value ) {
+                        case 'HYBRID':
+                            gmap.setMapTypeId( 'hybrid' );
+                            break;
+                        case 'SATELLITE':
+                            gmap.setMapTypeId( 'satellite' );
+                            break;
+                        case 'TERRAIN':
+                            gmap.setMapTypeId( 'terrain' );
+                            break;
+                        default :
+                            gmap.setMapTypeId( 'roadmap' );
+
+                    }
+
                     break;
             }
 
