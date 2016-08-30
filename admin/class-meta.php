@@ -115,7 +115,8 @@ class Mapify_Meta {
         $html .= '<ul class="map-option-group">';
         foreach ( $group_settings as $group ) {
             $group = wp_parse_args( $group, array(
-                'id' => ''
+                'id' => '',
+                'desc' => ''
             ) );
             if ( $group['id'] == 'locations' ) {
                 $html .= '<li class="group-locations locations">';
@@ -125,6 +126,9 @@ class Mapify_Meta {
                 $html .= '<li class="group-'.esc_attr( $group['id'] ).'">';
                 $html .= '<div class="map-og-heading">'.esc_html( $group['group_heading'] ).'</div>';
                 $html .= '<div class="map-og-settings">';
+                if ( $group['desc'] ) {
+                    $html .= '<div class="map-og-desc">' . $group['desc'] . '</div>';
+                }
                 foreach ( $group['settings'] as $setting ) {
                     $html .= $this->field( $setting );
                 }

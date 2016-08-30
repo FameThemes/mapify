@@ -105,6 +105,10 @@
 .opened .map-og-settings {
 
 }
+.map-og-desc {
+    margin-bottom: 15px;
+    font-style: italic;
+}
 
 .mapify-modal .field-input {
     margin-bottom: 15px;

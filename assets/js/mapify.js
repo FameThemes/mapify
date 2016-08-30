@@ -1,35 +1,4 @@
-function toFloat( number ){
-    number
-}
 
-var mapifyFomat = {
-    toFloat: function( test ){
-        var n = parseFloat( test );
-        if ( isNaN( n ) ){
-            return 0;
-        } else {
-            return n;
-        }
-    },
-    toInt: function( test ){
-        var n = parseInt( test );
-        if ( isNaN( n ) ){
-            return 0;
-        } else {
-            return n;
-        }
-    },
-    toBool: function ( test ) {
-        if ( 'boolean' === typeof test ) {
-            return test;
-        }
-        if ( 'string' === typeof test ){
-            return ( 'true' == test || '1' == test ) ? true : false;
-        } else {
-            return ( this.toInt( test ) == 1 ) ? true : false;
-        }
-    }
-};
 
 jQuery( document).ready( function( $ ){
     window.mapify_maps = {};
@@ -163,9 +132,44 @@ jQuery( document).ready( function( $ ){
                             mapOptions.mapTypeId = 'roadmap';
                     }
 
+                    // set map width/ height
+                    var cssW = mapifyFomat.toCssUnit( data.map_width );
+                    var cssH = mapifyFomat.toCssUnit( data.map_height );
+                    if ( cssW.u ) {
+                        map_wrapper.css( {
+                            width: cssW.n + cssW.u
+                        } );
+                    }
+                    if ( cssH.u ) {
+                        map_wrapper.css( {
+                            height: 0,
+                            display: 'block',
+                            paddingTop: cssH.n + cssH.u
+                        } );
+                    }
+
                     mapify_maps[ data.map_id] = {};
                     mapify_maps[ data.map_id].data = data;
                     mapify_maps[ data.map_id].map = new google.maps.Map( map_wrapper.find('.mapify-gmap')[0], mapOptions );
+                    //Traffic layer
+                    if ( mapifyFomat.toBool( data.traffic_layer ) ) {
+                        var trafficLayer = new google.maps.TrafficLayer();
+                        console.log( 'traffic_layer');
+                        trafficLayer.setMap( mapify_maps[ data.map_id].map );
+                    }
+                    // transit layer
+                    if ( mapifyFomat.toBool( data.transit_layer ) ) {
+                        var transitLayer = new google.maps.TransitLayer();
+                        console.log( 'transitLayer');
+                        transitLayer.setMap( mapify_maps[ data.map_id].map );
+                    }
+                    // bicycling layer
+                    if ( mapifyFomat.toBool( data.bicycling_layer ) ) {
+                        var bikeLayer = new google.maps.BicyclingLayer();
+                        console.log( 'bikeLayer');
+                        bikeLayer.setMap( mapify_maps[ data.map_id].map );
+                    }
+
                     mapify_maps[ data.map_id].locations = {};
 
                     $.each( res.data.locations, function( l_id, location_data ){

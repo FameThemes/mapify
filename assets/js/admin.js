@@ -47,7 +47,6 @@ var mapify = {
     current_action: null,
 };
 
-
 ( function( $, window ) {
 
     var maps = {};
@@ -134,6 +133,10 @@ var mapify = {
                 map_id: 0, // 0 mean add new
                 map_title:  false
             };
+            new_map_data = $.extend( {}, mapify_config.default_map_data, new_map_data );
+
+            console.log( new_map_data );
+
             map_modal = $( getTemplate( 'mapify-map-template', new_map_data ) );
             $( 'body' ).append( map_modal );
             $( 'body' ).append( '<div class="media-modal-backdrop"></div>' );
@@ -612,6 +615,31 @@ var mapify = {
 
         function changeMapData( key, value ){
             data_changed.map[ key ] = value;
+            // Live preview
+            switch ( key ){
+                case 'pan_controller':
+                    gmap.setOptions( { panControl: mapifyFomat.toBool( value ) });
+                    break;
+                case 'wheel_scrolling':
+                    gmap.setOptions( { scrollwheel: mapifyFomat.toBool( value ) });
+                    break;
+                case 'zoom_controller':
+                    gmap.setOptions( { zoomControl: mapifyFomat.toBool( value ) });
+                    break;
+                case 'street_view_controller':
+                    gmap.setOptions( { streetViewControl: mapifyFomat.toBool( value ) });
+                    break;
+                case 'map_type_controller':
+                    gmap.setOptions( { mapTypeControl: mapifyFomat.toBool( value ) });
+                    break;
+                case 'scale_controller':
+                    gmap.setOptions( { scaleControl: mapifyFomat.toBool( value ) });
+                    break;
+                case 'map_draggable':
+                    gmap.setOptions( { draggable: mapifyFomat.toBool( value ) });
+                    break;
+            }
+
             enableSaveData();
            // $('#js-debug').text( JSON.stringify( data_changed ) );
         }
@@ -675,9 +703,10 @@ var mapify = {
          */
         $( '.map-preview', map_modal ).each( function(){
             var center;
+            var data = map_data;
             try {
-                if ( map_data.center_latitude.toString().length > 0 && map_data.center_longitude.toString().length > 0 ) {
-                    center = new google.maps.LatLng( parseFloat( map_data.center_latitude ) , parseFloat( map_data.center_longitude ) );
+                if ( data.center_latitude.toString().length > 0 && data.center_longitude.toString().length > 0 ) {
+                    center = new google.maps.LatLng( mapifyFomat.toFloat( data.center_latitude ) , mapifyFomat.toFloat( data.center_longitude ) );
                 } else {
                     center = new google.maps.LatLng( 54.800685, -4.130859 );
                 }
@@ -685,13 +714,39 @@ var mapify = {
                 center = new google.maps.LatLng( 54.800685, -4.130859 );
             }
 
-            // Map
+            data.zoom_level = mapifyFomat.toInt( data.zoom_level );
+            if ( data.zoom_level == 0 ) {
+                data.zoom_level = 12;
+            }
+
             var mapOptions = {
                 center: center,
-                zoom: 12,
-                disableDoubleClickZoom: true,
-                panControl: true,
+                zoom: data.zoom_level,
+                disableDoubleClickZoom: false,
+                scrollwheel: mapifyFomat.toBool( data.wheel_scrolling ),
+                panControl: mapifyFomat.toBool( data.pan_controller ),
+                zoomControl: mapifyFomat.toBool( data.zoom_controller ),
+                streetViewControl: mapifyFomat.toBool( data.street_view_controller ),
+                mapTypeControl: mapifyFomat.toBool( data.map_type_controller ),
+                scaleControl: mapifyFomat.toBool( data.scale_controller ),
+                draggable: mapifyFomat.toBool( data.map_draggable ),
+                //language: 'en',
             };
+            switch ( data.map_type ) {
+                case 'HYBRID':
+                    mapOptions.mapTypeId = 'hybrid';
+                    break;
+                case 'SATELLITE':
+                    mapOptions.mapTypeId = 'satellite';
+                    break;
+                case 'TERRAIN':
+                    mapOptions.mapTypeId = 'terrain';
+                    break;
+                default :
+                    mapOptions.mapTypeId = 'roadmap';
+            }
+
+
             gmap = new google.maps.Map( $( this )[0], mapOptions );
             gmap.addListener('rightclick', function( event ) {
                // if ( mapify.current_action == 'new_marker' ) {
@@ -843,12 +898,13 @@ var mapify = {
 
         });
 
+        window.mapify_tooltip = false;
+
         map_modal.on( 'mousemove', '.field-input .dashicons-editor-help', function( e ){
             var f = $( this).closest( '.field-input' );
             var icon = $( this );
             var h, w, t, l;
             if ( window.mapify_tooltip ) {
-
                 h = window.mapify_tooltip.outerHeight();
                 w = window.mapify_tooltip.outerWidth();
                 l = e.pageX - w / 2;

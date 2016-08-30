@@ -47,7 +47,8 @@ class Mapify {
     function js()
     {
         $this->load_gmap_js();
-        wp_enqueue_script( 'mapify', $this->url.'assets/js/mapify.js', array( 'jquery', 'google-maps-api', 'json2', 'underscore' ) );
+        wp_enqueue_script( 'mapify-format', $this->url.'assets/js/format.js' );
+        wp_enqueue_script( 'mapify', $this->url.'assets/js/mapify.js', array( 'jquery', 'google-maps-api', 'json2', 'underscore', 'mapify-format' ) );
         wp_localize_script( 'mapify', 'Mapify', array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce( 'mapify_nonce_action' ),

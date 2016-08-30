@@ -38,33 +38,39 @@ class Mapify_Map {
                     array(
                         'title' => esc_html__( 'Enable Pan-Controller', 'mapify' ),
                         'type' => 'checkbox',
-                        'id' => 'pan_controller'
+                        'id' => 'pan_controller',
+                        'default' => '1',
                     ),
                     array(
                         'title' => esc_html__( 'Enable Zoom-Controller', 'mapify' ),
                         'type' => 'checkbox',
-                        'id' => 'zoom_controller'
+                        'id' => 'zoom_controller',
+                        'default' => '1',
                     ),
                     array(
                         'title' => esc_html__( 'Enable Map-Type-Controller', 'mapify' ),
                         'type' => 'checkbox',
-                        'id' => 'map_type_controller'
+                        'id' => 'map_type_controller',
+                        'default' => '1',
                     ),
                     array(
                         'title' => esc_html__( 'Enable Scale-Controller', 'mapify' ),
                         'type' => 'checkbox',
+                        'default' => '1',
                         'id' => 'scale_controller'
                     ),
                     array(
                         'title' => esc_html__( 'Enable Street-View-Controller', 'mapify' ),
                         'type' => 'checkbox',
                         'id' => 'street_view_controller',
-                        'help' => esc_html__( 'Map width, can use % or px example: 100%, 500px, ...', 'mapify' ),
+                        'default' => '1',
                     ),
                     array(
                         'title' => esc_html__( 'Zoom Level', 'mapify' ),
                         'type' => 'text',
-                        'id' => 'zoom_level'
+                        'default' => '12',
+                        'id' => 'zoom_level',
+                        'help' => esc_html__( 'Click to Set Center button to get current zoom level.', 'mapify' ),
                     ),
                     array(
                         'title' => esc_html__( 'Max Zoom', 'mapify' ),
@@ -79,12 +85,14 @@ class Mapify_Map {
                     array(
                         'title' => esc_html__( 'Center Latitude', 'mapify' ),
                         'type' => 'text',
-                        'id' => 'center_latitude'
+                        'id' => 'center_latitude',
+                        'help' => esc_html__( 'Click to Set Center button to get current center latitude.', 'mapify' ),
                     ),
                     array(
                         'title' => esc_html__( 'Center Longitude', 'mapify' ),
                         'type' => 'text',
-                        'id' => 'center_longitude'
+                        'id' => 'center_longitude',
+                        'help' => esc_html__( 'Click to Set Center button to get current center longitude.', 'mapify' ),
                     ),
                     array(
                         'title' => esc_html__( 'Map Width', 'mapify' ),
@@ -119,11 +127,13 @@ class Mapify_Map {
                     array(
                         'title' => esc_html__( 'Wheel Scrolling', 'mapify' ),
                         'type' => 'checkbox',
-                        'id' => 'wheel_scrolling'
+                        'id' => 'wheel_scrolling',
+                        'default' => '1',
                     ),
                     array(
                         'title' => esc_html__( 'Map Draggable', 'mapify' ),
                         'type' => 'checkbox',
+                        'default' => '1',
                         'id' => 'map_draggable'
                     ),
 
@@ -133,6 +143,7 @@ class Mapify_Map {
             'layer' => array(
                 'group_heading' => esc_html__( 'Layer', 'mapify' ),
                 'id' => 'layer',
+                'desc' => esc_html__( 'The Traffic, Transit and Bicycling layers modify the base map layer to display current traffic conditions, or local Transit and Bicycling route information. These layers are available in select regions.', 'mapify' ),
                 'settings' => array(
                     array(
                         'title' => esc_html__( 'Traffic Layer', 'mapify' ),

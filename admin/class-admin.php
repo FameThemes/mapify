@@ -188,7 +188,8 @@ class Mapify_Admin {
         }
         Mapify()->load_gmap_js();
         wp_enqueue_media();
-        wp_enqueue_script( 'mapify-admin', Mapify()->url.'assets/js/admin.js', array( 'jquery', 'google-maps-api', 'json2' ), false, true );
+        wp_enqueue_script( 'mapify-format', Mapify()->url.'assets/js/format.js' );
+        wp_enqueue_script( 'mapify-admin', Mapify()->url.'assets/js/admin.js', array( 'jquery', 'google-maps-api', 'json2', 'mapify-format' ), false, true );
         wp_enqueue_style( 'mapify-admin', Mapify()->url.'assets/css/admin.css' );
         wp_localize_script( 'mapify-admin', 'mapify_config', array(
             'ajax_url' => admin_url('admin-ajax.php'),
@@ -197,6 +198,7 @@ class Mapify_Admin {
             'untitled' => esc_html__( 'Untitled', 'mapify' ),
             'saving' => esc_html__( 'Saving...', 'mapify' ),
             'save_changes' => esc_html__( 'Save Changes', 'mapify' ),
+            'default_map_data' => Mapify_Map()->get_meta_fields(),
             'helps' => array(
                 'new_marker' => esc_html__( 'Right click on the map to add marker.', 'mapify' ),
                 'new_polygon' => esc_html__( 'Right click on the map to add marker, Click Done button to complete.', 'mapify' ),
