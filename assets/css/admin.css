@@ -367,3 +367,23 @@
     width: 60%;
     float: right;
 }
+
+/* Media */
+.field-marker img {
+    max-width: 100%;
+    height: auto;
+}
+.media-preview {
+    width: 80px;
+    height: 80px;
+    display: block;
+    border: 1px solid #DDDDDD;
+}
+.media-upload .media-remove {
+    color: #ef0000;
+    text-decoration: none;
+}
+.media-remove:before {
+    content: "\f335";
+    font-family: "dashicons";
+}

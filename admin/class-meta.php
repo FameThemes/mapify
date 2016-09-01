@@ -1,40 +1,62 @@
 <?php
 class Mapify_Meta {
 
-    function get_map_fields(){
-        return $this->get_settings_fields_array( $this->get_map_settings() );
-    }
-
-    function get_locations_fields(){
-        return  $this->get_settings_fields_array( $this->get_location_settings() );
-    }
-
-    function get_settings_fields_array( $group_settings ) {
+    function get_settings_fields_array( $groups ) {
         $fields = array();
-        foreach ( $group_settings as $group ) {
+
+        $media_types = array( 'media', 'marker' );
+
+        foreach ( $groups as $group ) {
             $group = wp_parse_args( $group, array(
-                'id' => ''
+                'id' => '',
             ) );
             if ( $group['id'] == 'locations' ) {
 
             } else if ( isset( $group['settings']) && is_array( $group['settings'] ) ) {
                 foreach ( $group['settings'] as $setting ) {
-                    $fields[ $setting['id'] ] = isset( $setting['default'] ) ? $setting['default']: null;
+
+                    if ( isset( $setting['type'] ) && in_array( $setting['type'], $media_types ) ) {
+                        $arr = $this->get_media_meta_field( $setting );
+                        foreach( $arr as $k => $v ){
+                            $fields[ $k ] = $v;
+                        }
+
+                    } else {
+                        $fields[ $setting['id'] ] = isset( $setting['default'] ) ? $setting['default']: null;
+                    }
+                }
+            } else {
+                if ( isset( $group['type'] ) && in_array( $group['type'], $media_types ) ) {
+                    $arr = $this->get_media_meta_field( $group );
+                    foreach( $arr as $k => $v ){
+                        $fields[ $k ] = $v;
+                    }
+                } else {
+                    $fields[ $group['id'] ] = isset( $group['default'] ) ? $group['default']: null;
                 }
 
-            } else {
-                $fields[ $group['id'] ] = isset( $group['default'] ) ? $group['default']: null;
             }
         }
         return $fields;
     }
 
-    function get_map_settings(){
-        return Mapify_Map()->get_meta_settings();
-    }
+    function get_media_meta_field( $option ){
+        if ( !isset( $option['default'] ) ) {
+            $option['default'] = array();
+        }
 
-    function get_location_settings(){
-        return Mapify_Location()->get_meta_settings();
+        $option['default'] = wp_parse_args( $option['default'], array(
+            'url' => '',
+            'id' => '',
+            'type' => '',
+        ) );
+
+        $array = array();
+        $array[ $option['id'] ]         = $option['default']['url'];
+        $array[ $option['id'].'_id' ]   = $option['default']['id'];
+        $array[ $option['id'].'_type' ] = $option['default']['type'];
+
+        return $array;
     }
 
     function field( $setting ){
@@ -93,6 +115,29 @@ class Mapify_Meta {
                 }
                 $html .= '</div>';
                 break;
+            case 'marker':
+                $js_val_name = 'data.'.esc_attr( $setting['id'] );
+                $js_value = '{{ '.$js_val_name.' }}';
+
+                $html .= '<div class="field-input field-marker">';
+                $html .= '<label class="label">'.$setting['title'];
+                if ( $setting['help'] ) {
+                    $html .= '<span class="dashicons dashicons-editor-help"></span>';
+                }
+                $html .= '<div class="media-upload">';
+                    $html .= '<div class="media-preview"></div>';
+                    $html .= '<a href="#" class="media-remove"></a>';
+                    $html .= '<input type="hidden" class="media_url" name="'.esc_attr( $setting['id'] ).'" value="'.$js_value.'">';
+                    $html .= '<input type="hidden" class="media_id" name="'.esc_attr( $setting['id'].'_id' ).'" value="'.$this->js_value( $setting['id'].'_id' ).'">';
+                    $html .= '<input type="hidden" class="media_type" name="'.esc_attr( $setting['id'].'_type' ).'" value="'.$this->js_value( $setting['id'].'_type' ).'">';
+                $html .= '</div>';
+
+                $html .= '</label>';
+                if ( $setting['help'] ) {
+                    $html .= '<div class="help-tooltip">'.$setting['help'].'</div>';
+                }
+                $html .= '</div>';
+                break;
             default:
                 $html .= '<div class="field-input field-text">';
                 $html .= '<label class="label">'.$setting['title'];
@@ -108,6 +153,14 @@ class Mapify_Meta {
         }
 
         return $html;
+    }
+
+    function js_name( $id ){
+        return 'data.'.esc_attr( $id );
+    }
+
+    function js_value( $id ){
+        return '{{ '.$this->js_name( $id ).' }}';;
     }
 
     function render( $group_settings ){
@@ -145,4 +198,11 @@ class Mapify_Meta {
         return $html;
     }
 
+}
+
+function Mapify_Meta(){
+    if ( ! isset( $GLOBALS['Mapify_Meta'] ) ) {
+        $GLOBALS['Mapify_Meta'] = new Mapify_Meta();
+    }
+    return $GLOBALS['Mapify_Meta'] ;
 }

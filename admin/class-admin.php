@@ -132,7 +132,7 @@ class Mapify_Admin {
         }
 
         // Update map meta
-        $map_settings = $meta->get_map_fields();
+        $map_settings = Mapify_Map()->get_meta_fields();
         foreach ( $map_settings as $k => $v ) {
             if ( isset( $data['map'][ $k ] ) ) {
                 update_post_meta( $map_id, '_map_'.$k, $data['map'][ $k ] );

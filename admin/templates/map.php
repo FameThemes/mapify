@@ -1,8 +1,4 @@
 <div id="js-debug"></div>
-
-<?php
-$meta = new Mapify_Meta();
-?>
 <script type="text/html" id="mapify-infowindow-template">
     <div class="infowindow gmap-infowindow">
         <# if ( data.title ) { #>
@@ -55,23 +51,13 @@ $meta = new Mapify_Meta();
         <a href="#" data-l-id="{{ data.location_id }}" class="del-location"><?php esc_html_e( 'Delete', 'mapify' ); ?></a>
     </div>
 </script>
-<script type="text/html" id="mapify-location-template">
-    <div class="location-sidebar image-details">
-        <form class="mapify-location-form" data-l-id="location-id-{{ data.location_id }}">
-            <input type="hidden" name="map_id" value="{{ data.map_id }}">
-            <?php
-                echo $meta->render( $meta->get_location_settings() );
-            ?>
-        </form>
-    </div>
-</script>
 <script type="text/html" id="mapify-location-li">
     <li class="location-item" data-id="{{ data.location_id }}">
         <div class="map-og-heading"><# if ( data.title ) {  #>{{ data.title }}<# } else { #><?php esc_html_e( 'Untitled', 'mapify' ); ?><# }  #></div>
         <div class="map-og-settings">
             <form class="mapify-location-form" data-l-id="location-id-{{ data.location_id }}">
             <?php
-            echo $meta->render( $meta->get_location_settings() );
+            echo Mapify_Meta()->render( Mapify_Location()->get_meta_settings() );
             ?>
             </form>
             <a href="#" data-l-id="{{ data.location_id }}" class="del-location"><?php esc_html_e( 'Delete', 'mapify' ); ?></a>
@@ -114,7 +100,7 @@ $meta = new Mapify_Meta();
                                 </h2>
                                 <form  class="mapify-map-form">
                                     <?php
-                                    echo $meta->render( $meta->get_map_settings() );
+                                    echo Mapify_Meta()->render( Mapify_Map()->get_meta_settings() );
                                     ?>
                                 </form>
                             </div>

@@ -953,13 +953,82 @@ var mapify = {
             }
 
         } );
+
+        // Help tooltip
         map_modal.on( 'mouseleave', '.field-input .dashicons-editor-help', function( e ){
             window.mapify_tooltip.remove();
             window.mapify_tooltip = false;
         } );
 
+        // Media upload
 
-    }
+        var frame = wp.media({
+            title: wp.media.view.l10n.addMedia,
+            multiple: false,
+            library: {type: 'image' },
+            //button : { text : 'Insert' }
+        });
+
+        var media_current;
+
+        frame.on('close', function () {
+            // get selections and save to hidden input plus other AJAX stuff etc.
+            var selection = frame.state().get('selection');
+            // console.log(selection);
+        });
+
+        frame.on( 'select', function () {
+            // Grab our attachment selection and construct a JSON representation of the model.
+            var media_attachment = frame.state().get('selection').first().toJSON();
+            var preview, img_url;
+            img_url = media_attachment.url;
+            if ( media_attachment.sizes.thumbnail ) {
+                img_url = media_attachment.sizes.thumbnail.url;
+            }
+
+            console.log( media_attachment );
+
+            $( '.media_id', media_current  ).val( media_attachment.id );
+            $( '.media_type', media_current ).val( media_attachment.type );
+            $( '.media_url', media_current  ).val( img_url );
+
+            if ( media_attachment.type == 'video' ) {
+                preview = '<video width="400" controls>'+
+                    '<source src="'+img_url+'" type="'+media_attachment.mime+'">'+
+                    'Your browser does not support HTML5 video.'+
+                    '</video>';
+                $('.media-preview', media_current  ).html(preview);
+
+            } else if ( media_attachment.type == 'image' ) {
+                preview = '<img src="' + img_url + '" alt="">';
+                $('.media-preview', media_current  ).html(preview);
+            }
+
+            $('.media-remove', media_current  ).show();
+            $( '.media_id, .media_type, .media_url', media_current  ).trigger( 'change' );
+
+        });
+
+        map_modal.on( 'click', '.media-upload .media-preview', function( e ){
+            e.preventDefault();
+            media_current = $( this).closest( '.media-upload' );
+            frame.open();
+        } );
+
+        map_modal.on( 'click', '.media-upload .media-remove', function( e ){
+            e.preventDefault();
+            media_current = $( this).closest( '.media-upload' );
+            $('.media-preview', media_current).html( '' );
+            $( '.media_id, .media_type, .media_url', media_current  ).val( '' );
+            $( '.media_id, .media_type, .media_url', media_current  ).trigger( 'change' );
+
+        } );
+
+
+        // end upload
+
+
+    } // End
 
     MapifyAdminControler();
 

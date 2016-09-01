@@ -120,23 +120,7 @@ class Mapify_Location {
     }
 
     function get_meta_fields() {
-        $fields = array();
-        foreach ( $this->get_meta_settings() as $group ) {
-            $group = wp_parse_args( $group, array(
-                'id' => ''
-            ) );
-            if ( $group['id'] == 'locations' ) {
-
-            } else if ( isset( $group['settings']) && is_array( $group['settings'] ) ) {
-                foreach ( $group['settings'] as $setting ) {
-                    $fields[ $setting['id'] ] = isset( $setting['default'] ) ? $setting['default']: null;
-                }
-
-            } else {
-                $fields[ $group['id'] ] = isset( $group['default'] ) ? $group['default']: null;
-            }
-        }
-        return $fields;
+        return Mapify_Meta()->get_settings_fields_array( $this->get_meta_settings() );
     }
 
     static function info_tpl(){
@@ -189,6 +173,7 @@ class Mapify_Location {
                     <div class="value">{{ data.infowindow }}</div>
                 </div>
             <# } #>
+
         </div>
     </script>
     <?php
@@ -243,6 +228,11 @@ class Mapify_Location {
                 'title' => esc_html__( 'Infowindow', 'mapify' ),
                 'type' => 'textarea',
                 'id' => 'infowindow'
+            ),
+            array(
+                'title' => esc_html__( 'Marker', 'mapify' ),
+                'type'  => 'marker',
+                'id'    => 'marker'
             ),
 
 

@@ -182,22 +182,7 @@ class Mapify_Map {
     }
 
     function get_meta_fields() {
-        $fields = array();
-        foreach ( $this->get_meta_settings() as $group ) {
-            $group = wp_parse_args( $group, array(
-                'id' => ''
-            ) );
-            if ( $group['id'] == 'locations' ) {
-
-            } else if ( isset( $group['settings']) && is_array( $group['settings'] ) ) {
-                foreach ( $group['settings'] as $setting ) {
-                    $fields[ $setting['id'] ] = isset( $setting['default'] ) ? $setting['default']: null;
-                }
-            } else {
-                $fields[ $group['id'] ] = isset( $group['default'] ) ? $group['default']: null;
-            }
-        }
-        return $fields;
+        return Mapify_Meta()->get_settings_fields_array( $this->get_meta_settings() );
     }
 
     function get_countries(){
