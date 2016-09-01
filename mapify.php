@@ -66,8 +66,16 @@ class Mapify {
         return '<div class="mapify" data-map-id="'.esc_attr( $id ).'"><div class="mapify-gmap">'.esc_html__( 'Loading mapify....' , 'mapify' ).'</div></div>';
     }
 
+
+    function add_image_sizes() {
+        add_image_size( 'mapify-marker', 150, 150, true ); // (cropped)
+    }
+
     function init()
     {
+
+        add_action( 'after_setup_theme', array( $this, 'add_image_sizes' ) );
+
         if ( ! is_admin() ) {
             add_action( 'wp_enqueue_scripts', array( $this, 'css' ) );
         }

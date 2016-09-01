@@ -92,10 +92,29 @@ class Mapify_Location {
         }
 
         $data = array();
-        $meta_fields = $this->get_meta_fields();
-        foreach ( $meta_fields as $k => $v ){
+        $meta_fields = $this->get_meta_fields( true );
+        $media_fields = array();
+        foreach ( $meta_fields as $k => $option ){
             $data[ $k ] = get_post_meta( $p->ID, '_location_'.$k, true );
+            if ( in_array( $option['type'], array( 'marker', 'media' ) ) ) {
+                $media_fields[ $k ] = $option;
+            }
         }
+
+        foreach ( $media_fields as $k => $option ) {
+            if ( isset( $data[ $k. '_type' ] ) && $data[ $k. '_id' ] ) {
+                if ( $data[ $k. '_type' ] == 'video' ) {
+                    $data[ $k ] = wp_get_attachment_url( $data[ $k. '_id' ] );
+                } else {
+                    $size = isset( $option['size'] ) ? $option['size'] : 'thumbnail';
+                    $image_attributes = wp_get_attachment_image_src( $data[ $k. '_id'], $size  );
+                    if ( $image_attributes ) {
+                        $data[ $k ] = $image_attributes[0];
+                    }
+                }
+            }
+        }
+
         $data['title'] = $p->post_title;
         $data['location_id'] = $p->ID;
         $data['info'] = $p->post_content;
@@ -119,8 +138,8 @@ class Mapify_Location {
         return $locations;
     }
 
-    function get_meta_fields() {
-        return Mapify_Meta()->get_settings_fields_array( $this->get_meta_settings() );
+    function get_meta_fields( $get_option = false ) {
+        return Mapify_Meta()->get_settings_fields_array( $this->get_meta_settings(), $get_option );
     }
 
     static function info_tpl(){
@@ -231,8 +250,9 @@ class Mapify_Location {
             ),
             array(
                 'title' => esc_html__( 'Marker', 'mapify' ),
-                'type'  => 'marker',
-                'id'    => 'marker'
+                'type'  => 'media',
+                'id'    => 'marker',
+                'size'  => 'mapify-marker'
             ),
 
 

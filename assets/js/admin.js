@@ -607,6 +607,25 @@ var mapify = {
                 data_changed.locations[ location_id ] = {};
             }
             data_changed.locations[ location_id ][ key ] = value;
+
+            switch ( key ){
+                case 'marker':
+
+                    if ( locations[ location_id ]._marker ) {
+                        console.log( value );
+                        var icon = {
+                            url: value, // url
+                            scaledSize: new google.maps.Size(50, 50), // scaled size
+                            origin: new google.maps.Point(0,0), // origin
+                            anchor: new google.maps.Point(0, 0) // anchor
+                        };
+
+                        locations[ location_id ]._marker.setIcon( icon );
+
+                    }
+
+                    break;
+            }
             enableSaveData();
             //$('#js-debug').text( JSON.stringify( data_changed ) );
         }
@@ -986,13 +1005,15 @@ var mapify = {
                 img_url = media_attachment.sizes.thumbnail.url;
             }
 
-            console.log( media_attachment );
+           // console.log( media_attachment );
 
             $( '.media_id', media_current  ).val( media_attachment.id );
             $( '.media_type', media_current ).val( media_attachment.type );
             $( '.media_url', media_current  ).val( img_url );
 
+            media_current.addClass( 'has-preview' );
             if ( media_attachment.type == 'video' ) {
+
                 preview = '<video width="400" controls>'+
                     '<source src="'+img_url+'" type="'+media_attachment.mime+'">'+
                     'Your browser does not support HTML5 video.'+
@@ -1021,6 +1042,7 @@ var mapify = {
             $('.media-preview', media_current).html( '' );
             $( '.media_id, .media_type, .media_url', media_current  ).val( '' );
             $( '.media_id, .media_type, .media_url', media_current  ).trigger( 'change' );
+            media_current.removeClass( 'has-preview' );
 
         } );
 

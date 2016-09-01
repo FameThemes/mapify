@@ -1,7 +1,7 @@
 <?php
 class Mapify_Meta {
 
-    function get_settings_fields_array( $groups ) {
+    function get_settings_fields_array( $groups, $get_option = false ) {
         $fields = array();
 
         $media_types = array( 'media', 'marker' );
@@ -14,25 +14,33 @@ class Mapify_Meta {
 
             } else if ( isset( $group['settings']) && is_array( $group['settings'] ) ) {
                 foreach ( $group['settings'] as $setting ) {
-
                     if ( isset( $setting['type'] ) && in_array( $setting['type'], $media_types ) ) {
-                        $arr = $this->get_media_meta_field( $setting );
+                        $arr = $this->get_media_meta_field( $setting, $get_option );
                         foreach( $arr as $k => $v ){
                             $fields[ $k ] = $v;
                         }
-
                     } else {
-                        $fields[ $setting['id'] ] = isset( $setting['default'] ) ? $setting['default']: null;
+                        if ( $get_option ) {
+                            $fields[ $setting['id'] ] = $setting;
+                        } else {
+                            $fields[ $setting['id'] ] = isset( $setting['default'] ) ? $setting['default']: null;
+                        }
+
                     }
                 }
             } else {
                 if ( isset( $group['type'] ) && in_array( $group['type'], $media_types ) ) {
-                    $arr = $this->get_media_meta_field( $group );
+                    $arr = $this->get_media_meta_field( $group, $get_option );
                     foreach( $arr as $k => $v ){
                         $fields[ $k ] = $v;
                     }
                 } else {
-                    $fields[ $group['id'] ] = isset( $group['default'] ) ? $group['default']: null;
+                    if ( $get_option ) {
+                        $fields[ $group['id'] ] = $group;
+                    } else {
+                        $fields[ $group['id'] ] = isset( $group['default'] ) ? $group['default']: null;
+                    }
+
                 }
 
             }
@@ -40,7 +48,7 @@ class Mapify_Meta {
         return $fields;
     }
 
-    function get_media_meta_field( $option ){
+    function get_media_meta_field( $option, $get_option = false ){
         if ( !isset( $option['default'] ) ) {
             $option['default'] = array();
         }
@@ -49,12 +57,23 @@ class Mapify_Meta {
             'url' => '',
             'id' => '',
             'type' => '',
+            'size' => '',
         ) );
 
         $array = array();
-        $array[ $option['id'] ]         = $option['default']['url'];
-        $array[ $option['id'].'_id' ]   = $option['default']['id'];
-        $array[ $option['id'].'_type' ] = $option['default']['type'];
+        if ( $get_option ) {
+            $array[ $option['id'] ]         = $option;
+            $option['child_of']             = $option['id'];
+            $option['type']                 = $option['child_media'];
+            $array[ $option['id'].'_id' ]   = $option;
+            $array[ $option['id'].'_type' ] = $option;
+            $array[ $option['id'].'_size' ] = $option;
+        } else {
+            $array[ $option['id'] ]         = $option['default']['url'];
+            $array[ $option['id'].'_id' ]   = $option['default']['id'];
+            $array[ $option['id'].'_type' ] = $option['default']['type'];
+            $array[ $option['id'].'_size' ] = $option['default']['size'];
+        }
 
         return $array;
     }
@@ -115,7 +134,7 @@ class Mapify_Meta {
                 }
                 $html .= '</div>';
                 break;
-            case 'marker':
+            case 'marker': case 'media':
                 $js_val_name = 'data.'.esc_attr( $setting['id'] );
                 $js_value = '{{ '.$js_val_name.' }}';
 
@@ -124,8 +143,8 @@ class Mapify_Meta {
                 if ( $setting['help'] ) {
                     $html .= '<span class="dashicons dashicons-editor-help"></span>';
                 }
-                $html .= '<div class="media-upload">';
-                    $html .= '<div class="media-preview"></div>';
+                $html .= '<div class="media-upload <# if ( '.$this->js_name( $setting['id'] ).' ){ #> has-preview<# } #>">';
+                    $html .= '<div class="media-preview"><# if ( '.$this->js_name( $setting['id'] ).' ){ #><img src="'.$js_value.'" alt=""/><# } #></div>';
                     $html .= '<a href="#" class="media-remove"></a>';
                     $html .= '<input type="hidden" class="media_url" name="'.esc_attr( $setting['id'] ).'" value="'.$js_value.'">';
                     $html .= '<input type="hidden" class="media_id" name="'.esc_attr( $setting['id'].'_id' ).'" value="'.$this->js_value( $setting['id'].'_id' ).'">';
