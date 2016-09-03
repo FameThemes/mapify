@@ -194,6 +194,13 @@ jQuery( document).ready( function( $ ){
                             mapOptions.mapTypeId = 'roadmap';
                     }
 
+                    try {
+                        var json =  JSON.parse( data.style );
+                        mapOptions.styles = json;
+                    } catch ( e ) {
+
+                    }
+
                     // set map width/ height
                     var cssW = mapifyFomat.toCssUnit( data.map_width );
                     var cssH = mapifyFomat.toCssUnit( data.map_height );

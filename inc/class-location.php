@@ -212,7 +212,8 @@ class Mapify_Location {
             array(
                 'title' => esc_html__( 'Location Address', 'mapify' ),
                 'type' => 'text',
-                'id' => 'address'
+                'id' => 'address',
+                'help' => esc_html__( 'Type your location here and hit enter to add marker to map.', 'mapify' ),
             ),
             array(
                 'title' => esc_html__( 'Latitude', 'mapify' ),
@@ -255,7 +256,8 @@ class Mapify_Location {
                 'title' => esc_html__( 'Marker', 'mapify' ),
                 'type'  => 'media',
                 'id'    => 'marker',
-                'size'  => 'mapify-marker'
+                'size'  => 'mapify-marker',
+                'help' => esc_html__( 'Custom marker icon, recommend image size no larger than 100x100px.', 'mapify' ),
             ),
 
 

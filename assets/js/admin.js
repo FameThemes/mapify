@@ -100,6 +100,14 @@ var mapify = {
                 streetViewControl: false,
                 mapTypeControl: false,
             };
+
+            try {
+                var json =  JSON.parse( data.style );
+                mapOptions.styles = json;
+            } catch ( e ) {
+
+            }
+
             map = new google.maps.Map( map_item.find('.gmap-preview')[0], mapOptions );
         } catch ( e ) {
             mapOptions = {
@@ -712,6 +720,18 @@ var mapify = {
                             break;
                         default :
                             gmap.setMapTypeId( 'roadmap' );
+                    }
+                    break;
+                case 'style':
+                    try {
+                        if ( value ) {
+                            var json =  JSON.parse( value );
+                            gmap.set('styles', json );
+                        } else {
+                            gmap.set('styles', null );
+                        }
+
+                    } catch ( e ) {
 
                     }
 
@@ -824,6 +844,15 @@ var mapify = {
                     mapOptions.mapTypeId = 'roadmap';
             }
 
+            try {
+                if ( data.style ) {
+                    var json =  JSON.parse( data.style );
+                    mapOptions.styles = json;
+                }
+            } catch ( e ) {
+
+            }
+
 
             gmap = new google.maps.Map( $( this )[0], mapOptions );
             gmap.addListener('rightclick', function( event ) {
@@ -898,6 +927,20 @@ var mapify = {
                     map_modal.removeClass( 'saving' );
                     $( '.mapify-save', map_modal).html( mapify_config.save_changes );
                     if ( res.success ) {
+
+                        try {
+                            if ( data_changed.map.style ) {
+                                var json =  JSON.parse( data_changed.map.style );
+                                if ( maps[ data_changed.map_id ] ) {
+                                    maps[ data_changed.map_id ].set('styles', json );
+                                }
+                            } else {
+                                maps[ data_changed.map_id ].set('styles', null );
+                            }
+                        } catch ( e ) {
+                            maps[ data_changed.map_id ].set('styles', null );
+                        }
+
                         // Update map_id
                         data_changed.map_id = res.data.map_id;
 
