@@ -75,12 +75,14 @@ class Mapify_Map {
                     array(
                         'title' => esc_html__( 'Max Zoom', 'mapify' ),
                         'type' => 'text',
-                        'id' => 'zoom_max'
+                        'id' => 'zoom_max',
+                        'help' => esc_html__( 'The maximum zoom level which will be displayed on the map. If omitted, or set to null, the maximum zoom from the current map type is used instead. Valid values: Integers between zero, and up to the supported maximum zoom level.', 'mapify' )
                     ),
                     array(
                         'title' => esc_html__( 'Min Zoom', 'mapify' ),
                         'type' => 'text',
-                        'id' => 'zoom_min'
+                        'id' => 'zoom_min',
+                        'help' => esc_html__( 'The minimum zoom level which will be displayed on the map. If omitted, or set to null, the minimum zoom from the current map type is used instead. Valid values: Integers between zero, and up to the supported maximum zoom level.', 'mapify' )
                     ),
                     array(
                         'title' => esc_html__( 'Center Latitude', 'mapify' ),
@@ -117,12 +119,6 @@ class Mapify_Map {
                             'HYBRID'    => esc_html__( 'HYBRID', 'mapify' ),
                             'TERRAIN'   => esc_html__( 'TERRAIN', 'mapify' ),
                         )
-                    ),
-                    array(
-                        'title' => esc_html__( 'Map Language', 'mapify' ),
-                        'type' => 'select',
-                        'id' => 'map_language',
-                        'options' => $this->get_countries()
                     ),
                     array(
                         'title' => esc_html__( 'Wheel Scrolling', 'mapify' ),
@@ -167,6 +163,7 @@ class Mapify_Map {
             'style' => array(
                 'group_heading' => esc_html__( 'Style', 'mapify' ),
                 'id' => 'style',
+                'desc' => sprintf( esc_html__( 'Want to map look different, %1$s, Looking for a nice style code ? Find it at %2$s. ', 'mapify' ), '<a target="_blank" href="https://developers.google.com/maps/documentation/javascript/tutorials/styling-the-base-map">'.esc_html__( 'See how to customizing a Google Map: Styled Maps', 'mapify' ).'</a>', '<a target="_blank" href="https://snazzymaps.com/">https://snazzymaps.com/</a>' ),
                 'settings' => array(
                     array(
                         'title' => esc_html__( 'Style settings code', 'mapify' ),

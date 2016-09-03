@@ -53,10 +53,13 @@
     border-left: 0px;
     border-right: 1px solid #DDDDDD;
 }
-.mapify-modal .media-sidebar  h2,
-.mapify-modal .locations-sidebar  h2 {
+.mapify-modal .media-sidebar  h2{
     margin: 20px 10px;
 }
+.mapify-modal .locations-sidebar  h2 {
+    margin: 17px 10px;
+}
+
 .map-option-group li {
     border-top: 1px solid #ddd;
     margin-bottom: 0px;
@@ -176,19 +179,22 @@
     text-transform: none;
 }
 .location-actions .first-menu {
-    padding: 5px;
-    background: #ffffff;
     z-index: 35;
+    padding: 5px;
     position: relative;
-    border: 1px solid transparent;
+
     /*
+    background: #ffffff;
+    border: 1px solid transparent;
     border-right: 1px solid transparent;
     border-top: 1px solid transparent;
     border-bottom: 0 none !important;
     */
 }
 .location-actions:hover .first-menu {
+    /*
     border-color: #DDDDDD;
+    */
 }
 .location-actions .sub-menu-actions {
     position: absolute;

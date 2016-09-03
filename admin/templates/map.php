@@ -69,7 +69,7 @@
     <div class="locations-sidebar image-details">
         <h2>
             <div class="location-actions">
-                <a class="new-marker first-menu" data-action="new-marker" href="#"><?php esc_html_e( 'Add Location', 'mapify' ); ?></a>
+                <a class="new-marker first-menu button button-primary button-small" data-action="new-marker" href="#"><?php esc_html_e( 'Add Location', 'mapify' ); ?></a>
             </div>
             <a href="#" class="locations-close"></a>
         </h2>
