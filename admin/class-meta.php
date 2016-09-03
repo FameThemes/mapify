@@ -57,7 +57,8 @@ class Mapify_Meta {
             'url' => '',
             'id' => '',
             'type' => '',
-            'size' => '',
+            'width' => '',
+            'height' => '',
         ) );
 
         $array = array();
@@ -65,14 +66,16 @@ class Mapify_Meta {
             $array[ $option['id'] ]         = $option;
             $option['child_of']             = $option['id'];
             $option['type']                 = $option['child_media'];
-            $array[ $option['id'].'_id' ]   = $option;
-            $array[ $option['id'].'_type' ] = $option;
-            $array[ $option['id'].'_size' ] = $option;
+            $array[ $option['id'].'__id' ]   = $option;
+            $array[ $option['id'].'__type' ] = $option;
+            $array[ $option['id'].'__width' ] = $option;
+            $array[ $option['id'].'__height' ] = $option;
         } else {
             $array[ $option['id'] ]         = $option['default']['url'];
-            $array[ $option['id'].'_id' ]   = $option['default']['id'];
-            $array[ $option['id'].'_type' ] = $option['default']['type'];
-            $array[ $option['id'].'_size' ] = $option['default']['size'];
+            $array[ $option['id'].'__id' ]   = $option['default']['id'];
+            $array[ $option['id'].'__type' ] = $option['default']['type'];
+            $array[ $option['id'].'__width' ] = $option['default']['width'];
+            $array[ $option['id'].'__height' ] = $option['default']['height'];
         }
 
         return $array;
@@ -144,11 +147,13 @@ class Mapify_Meta {
                     $html .= '<span class="dashicons dashicons-editor-help"></span>';
                 }
                 $html .= '<div class="media-upload <# if ( '.$this->js_name( $setting['id'] ).' ){ #> has-preview<# } #>">';
-                    $html .= '<div class="media-preview"><# if ( '.$this->js_name( $setting['id'] ).' ){ #><img src="'.$js_value.'" alt=""/><# } #></div>';
+                    $html .= '<div class="media-preview-wrap"><div class="media-preview"><# if ( '.$this->js_name( $setting['id'] ).' ){ #><img src="'.$js_value.'" alt=""/><# } #></div></div>';
                     $html .= '<a href="#" class="media-remove"></a>';
                     $html .= '<input type="hidden" class="media_url" name="'.esc_attr( $setting['id'] ).'" value="'.$js_value.'">';
-                    $html .= '<input type="hidden" class="media_id" name="'.esc_attr( $setting['id'].'_id' ).'" value="'.$this->js_value( $setting['id'].'_id' ).'">';
-                    $html .= '<input type="hidden" class="media_type" name="'.esc_attr( $setting['id'].'_type' ).'" value="'.$this->js_value( $setting['id'].'_type' ).'">';
+                    $html .= '<input type="hidden" class="media_id" name="'.esc_attr( $setting['id'].'__id' ).'" value="'.$this->js_value( $setting['id'].'__id' ).'">';
+                    $html .= '<input type="hidden" class="media_type" name="'.esc_attr( $setting['id'].'__type' ).'" value="'.$this->js_value( $setting['id'].'__type' ).'">';
+                    $html .= '<input type="hidden" class="media_size_width" name="'.esc_attr( $setting['id'].'__width' ).'" value="'.$this->js_value( $setting['id'].'__width' ).'">';
+                    $html .= '<input type="hidden" class="media_size_height" name="'.esc_attr( $setting['id'].'__height' ).'" value="'.$this->js_value( $setting['id'].'__height' ).'">';
                 $html .= '</div>';
 
                 $html .= '</label>';

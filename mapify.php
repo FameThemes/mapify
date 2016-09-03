@@ -68,7 +68,7 @@ class Mapify {
 
 
     function add_image_sizes() {
-        add_image_size( 'mapify-marker', 150, 150, true ); // (cropped)
+        add_image_size( 'mapify-marker', 80, 9999, false ); // Auto height
     }
 
     function init()

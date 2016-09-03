@@ -431,6 +431,42 @@ var mapify = {
             }
         }
 
+        function setMarkerIcon( marker, options ){
+            var settings = $.extend( {}, {
+                url: '',
+                w: 0,
+                h: 0,
+                scale_size: 30,
+                scale_w: 0,
+                scale_h: 0,
+            }, options );
+
+            if ( ! marker || ! settings.url ) {
+                marker.setIcon( null );
+                return ;
+            }
+
+            settings.w = mapifyFomat.toInt( settings.w );
+            settings.h = mapifyFomat.toInt( settings.h );
+
+            if ( settings.w > settings.scale_size && settings.w ) {
+                settings.scale_w = settings.scale_size;
+                settings.scale_h = ( settings.scale_w / settings.w )*settings.h;
+            } else {
+                settings.scale_w = settings.w;
+                settings.scale_h = settings.h;
+            }
+
+            var icon = {
+                url: settings.url, // url
+               // size: new google.maps.Size(settings.w, settings.h),
+                scaledSize: new google.maps.Size(settings.scale_w, settings.scale_h), // scaled size
+                origin: new google.maps.Point(0,0), // origin
+                anchor: new google.maps.Point( settings.scale_w/2, settings.scale_h) // anchor
+            };
+            marker.setIcon( icon );
+        }
+
         function setLocationMarker( data ){
 
             if ( data.latitude.toString().length > 0 && data.longitude.toString().length ) {
@@ -447,6 +483,13 @@ var mapify = {
                 });
 
                 data._marker = marker;
+
+                // Set maker icon
+                setMarkerIcon( data._marker, {
+                    url: data.marker,
+                    w: data.marker__width,
+                    h: data.marker__height,
+                } );
 
                 google.maps.event.addListener(data._marker, 'drag', function () {
                     data._li.find('[name="latitude"]').val(data._marker.getPosition().lat());
@@ -612,15 +655,16 @@ var mapify = {
                 case 'marker':
 
                     if ( locations[ location_id ]._marker ) {
-                        console.log( value );
-                        var icon = {
-                            url: value, // url
-                            scaledSize: new google.maps.Size(50, 50), // scaled size
-                            origin: new google.maps.Point(0,0), // origin
-                            anchor: new google.maps.Point(0, 0) // anchor
-                        };
+                        var w = locations[ location_id]._li.find( '[name="'+( key )+'__width"]').val();
+                        var h = locations[ location_id]._li.find( '[name="'+( key )+'__height"]').val();
+                        w = mapifyFomat.toInt( w );
+                        h = mapifyFomat.toInt( h );
 
-                        locations[ location_id ]._marker.setIcon( icon );
+                        setMarkerIcon( locations[ location_id ]._marker, {
+                            url: value,
+                            w: w,
+                            h: h,
+                        } );
 
                     }
 
@@ -1000,16 +1044,34 @@ var mapify = {
             // Grab our attachment selection and construct a JSON representation of the model.
             var media_attachment = frame.state().get('selection').first().toJSON();
             var preview, img_url;
-            img_url = media_attachment.url;
-            if ( media_attachment.sizes.thumbnail ) {
-                img_url = media_attachment.sizes.thumbnail.url;
+            if ( media_attachment.type != 'video' ) {
+
+                if ( media_attachment.sizes.thumbnail ) {
+                    img_url = media_attachment.sizes.thumbnail.url;
+                    $( '.media_id', media_current  ).val( media_attachment.id );
+                    $( '.media_type', media_current ).val( media_attachment.type );
+                    $( '.media_url', media_current  ).val( img_url );
+                    $( '.media_size_width', media_current  ).val( media_attachment.sizes.thumbnail.width );
+                    $( '.media_size_height', media_current  ).val( media_attachment.sizes.thumbnail.height );
+
+                } else {
+                    img_url = media_attachment.url;
+                    $( '.media_id', media_current  ).val( media_attachment.id );
+                    $( '.media_type', media_current ).val( media_attachment.type );
+                    $( '.media_url', media_current  ).val( img_url );
+                    $( '.media_size_width', media_current  ).val( media_attachment.width );
+                    $( '.media_size_height', media_current  ).val( media_attachment.height );
+                }
+
+            } else {
+                img_url = media_attachment.url;
+                $( '.media_id', media_current  ).val( media_attachment.id );
+                $( '.media_type', media_current ).val( media_attachment.type );
+                $( '.media_url', media_current  ).val( img_url );
+                $( '.media_size_width', media_current  ).val( '' );
+                $( '.media_size_height', media_current  ).val( '' );
             }
 
-           // console.log( media_attachment );
-
-            $( '.media_id', media_current  ).val( media_attachment.id );
-            $( '.media_type', media_current ).val( media_attachment.type );
-            $( '.media_url', media_current  ).val( img_url );
 
             media_current.addClass( 'has-preview' );
             if ( media_attachment.type == 'video' ) {
@@ -1026,7 +1088,7 @@ var mapify = {
             }
 
             $('.media-remove', media_current  ).show();
-            $( '.media_id, .media_type, .media_url', media_current  ).trigger( 'change' );
+            $( '.media_id, .media_type, .media_url, .media_size_width, .media_size_height', media_current  ).trigger( 'change' );
 
         });
 
@@ -1041,7 +1103,7 @@ var mapify = {
             media_current = $( this).closest( '.media-upload' );
             $('.media-preview', media_current).html( '' );
             $( '.media_id, .media_type, .media_url', media_current  ).val( '' );
-            $( '.media_id, .media_type, .media_url', media_current  ).trigger( 'change' );
+            $( '.media_id, .media_type, .media_url, .media_size_width, .media_size_height', media_current  ).trigger( 'change' );
             media_current.removeClass( 'has-preview' );
 
         } );

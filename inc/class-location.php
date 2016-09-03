@@ -102,14 +102,16 @@ class Mapify_Location {
         }
 
         foreach ( $media_fields as $k => $option ) {
-            if ( isset( $data[ $k. '_type' ] ) && $data[ $k. '_id' ] ) {
-                if ( $data[ $k. '_type' ] == 'video' ) {
-                    $data[ $k ] = wp_get_attachment_url( $data[ $k. '_id' ] );
+            if ( isset( $data[ $k. '__type' ] ) && $data[ $k. '_id' ] ) {
+                if ( $data[ $k. '__type' ] == 'video' ) {
+                    $data[ $k ] = wp_get_attachment_url( $data[ $k. '__id' ] );
                 } else {
                     $size = isset( $option['size'] ) ? $option['size'] : 'thumbnail';
-                    $image_attributes = wp_get_attachment_image_src( $data[ $k. '_id'], $size  );
+                    $image_attributes = wp_get_attachment_image_src( $data[ $k. '__id'], $size  );
                     if ( $image_attributes ) {
                         $data[ $k ] = $image_attributes[0];
+                        $data[ $k.'__width' ] = $image_attributes[1];
+                        $data[ $k.'__height' ] = $image_attributes[2];
                     }
                 }
             }
@@ -118,6 +120,7 @@ class Mapify_Location {
         $data['title'] = $p->post_title;
         $data['location_id'] = $p->ID;
         $data['info'] = $p->post_content;
+        $data['map_id'] = $p->post_parent;
         return $data;
     }
 

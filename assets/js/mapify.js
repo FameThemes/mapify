@@ -33,6 +33,58 @@ jQuery( document).ready( function( $ ){
         return t( tmpl_id,  data );
     }
 
+    function setAnimation( data, animation ){
+        $.each(  mapify_maps[ data.map_id ].locations ,function ( index ){
+            if ( mapify_maps[ data.map_id ].locations[ index ]._marker ) {
+                mapify_maps[ data.map_id ].locations[ index ]._marker.setAnimation( null );
+                mapify_maps[ data.map_id ].locations[ index ]._marker.setDraggable( false );
+            }
+            if ( mapify_maps[ data.map_id].locations[ index ]._infowindow ) {
+                mapify_maps[ data.map_id].locations[ index ]._infowindow.close( );
+            }
+        } );
+        if ( data._marker ) {
+            data._marker.setAnimation( animation );
+            data._infowindow.open( data._infowindow, data._marker );
+        }
+    }
+
+    function setMarkerIcon( marker, options ){
+        var settings = $.extend( {}, {
+            url: '',
+            w: 0,
+            h: 0,
+            scale_size: 30,
+            scale_w: 0,
+            scale_h: 0,
+        }, options );
+
+        if ( ! marker || ! settings.url ) {
+            marker.setIcon( null );
+            return ;
+        }
+
+        settings.w = mapifyFomat.toInt( settings.w );
+        settings.h = mapifyFomat.toInt( settings.h );
+
+        if ( settings.w > settings.scale_size && settings.w ) {
+            settings.scale_w = settings.scale_size;
+            settings.scale_h = ( settings.scale_w / settings.w )*settings.h;
+        } else {
+            settings.scale_w = settings.w;
+            settings.scale_h = settings.h;
+        }
+
+        var icon = {
+            url: settings.url, // url
+            //size: new google.maps.Size(settings.w, settings.h),
+            scaledSize: new google.maps.Size(settings.scale_w, settings.scale_h), // scaled size
+            origin: new google.maps.Point(0,0), // origin
+            anchor: new google.maps.Point( settings.scale_w/2, settings.scale_h) // anchor
+        };
+        marker.setIcon( icon );
+    }
+
 
     function setLocationMarker( data, map ){
 
@@ -50,9 +102,18 @@ jQuery( document).ready( function( $ ){
             });
 
             data._marker = marker;
+            // Set maker icon
+            setMarkerIcon( data._marker, {
+                url: data.marker,
+                w: data.marker__width,
+                h: data.marker__height,
+            } );
+
+            /*
             google.maps.event.addListener(data._marker, 'click', function () {
 
             });
+            */
 
             // Infowindow
             var info = getTemplate( 'mapify-infowindow-template', data );
@@ -62,6 +123,7 @@ jQuery( document).ready( function( $ ){
             data._info = $( info );
 
             data._marker.addListener('click', function() {
+                setAnimation( data, null );
                 data._infowindow.open( data._infowindow, data._marker);
             });
 
